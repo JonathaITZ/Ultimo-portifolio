@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes do Projeto | Dantas</title>
+    
+    <!-- Importando o Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+</head>
+<body class="bg-[#030712] text-white font-sans min-h-screen flex flex-col selection:bg-cyan-400 selection:text-slate-900 relative overflow-x-hidden">
+
+    <!-- Elementos de Brilho Neon no Fundo -->
+    <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-cyan-500/20 rounded-full blur-[120px] pointer-events-none z-0"></div>
+    <div class="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-blue-600/20 rounded-full blur-[120px] pointer-events-none z-0"></div>
+
+    <!-- Navbar Neon -->
+    <nav class="container mx-auto px-6 py-8 flex justify-between items-center relative z-10 border-b border-cyan-500/20 mb-8">
+        <a href="index.html" class="flex items-center text-cyan-400 hover:text-cyan-300 transition-colors font-bold tracking-widest group">
+            <svg class="w-5 h-5 mr-2 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            VOLTAR AO DASHBOARD
+        </a>
+    </nav>
+
+    <!-- Conteúdo do Projeto -->
+    <main id="main-content" class="container mx-auto px-4 sm:px-6 pb-12 flex-grow flex flex-col lg:flex-row gap-8 lg:gap-12 items-center lg:items-start max-w-7xl relative z-10 opacity-0 translate-y-12 scale-95 blur-sm transition-all duration-1000 ease-out">
+        
+        <!-- Lado Esquerdo: Mídia e Tecnologias -->
+        <div class="w-full lg:w-3/5 flex flex-col gap-6">
+            
+            <!-- Mídia (Foto ou Vídeo) -->
+            <div id="project-media-container" class="w-full rounded-2xl overflow-hidden shadow-[0_0_30px_rgba(34,211,238,0.15)] border border-cyan-500/30 flex justify-center items-center bg-[#0a0f1c]/80 backdrop-blur-xl aspect-video relative group">
+                <!-- A mídia será inserida aqui via JS -->
+            </div>
+
+            <!-- Card de Tecnologias (Exclusivo E-commerce) -->
+            <div id="tech-stack-card" class="hidden w-full rounded-2xl bg-[#0a0f1c]/60 backdrop-blur-xl border border-cyan-500/30 p-5 sm:p-6 shadow-[0_0_20px_rgba(34,211,238,0.1)] flex-col items-center justify-center relative overflow-hidden group">
+                <!-- Efeito de Brilho no Fundo -->
+                <div class="absolute inset-0 bg-gradient-to-r from-cyan-500/5 via-transparent to-blue-500/5 opacity-50 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+                <h3 class="text-cyan-400/80 font-mono text-xs sm:text-sm tracking-widest mb-5 uppercase drop-shadow-[0_0_5px_rgba(34,211,238,0.5)]">Tecnologias Utilizadas</h3>
+                
+                <div class="flex flex-wrap justify-center gap-8 sm:gap-12 relative z-10">
+                    <div class="flex flex-col items-center gap-2 group/icon cursor-default" title="HTML5">
+                        <svg class="w-8 h-8 sm:w-10 sm:h-10 text-slate-400 group-hover/icon:text-cyan-400 transition-all drop-shadow-[0_0_8px_rgba(34,211,238,0)] group-hover/icon:drop-shadow-[0_0_12px_rgba(34,211,238,0.8)] group-hover/icon:-translate-y-2 group-hover/icon:scale-110 duration-300" viewBox="0 0 384 512" fill="currentColor"><path d="M0 32l34.9 395.8L191.5 480l157.6-52.2L384 32H0zm308.2 127.9H124.4l4.1 49.4h175.6l-13.6 148.4-97.9 27v.3h-1.1l-98.7-27.3-6-75.8h47.7L138 320l53.5 14.5 53.7-14.5 6-62.2H84.3L71.5 112.2h241.1l-4.4 47.7z"/></svg>
+                        <span class="text-xs font-semibold text-slate-500 group-hover/icon:text-cyan-300 transition-colors tracking-wide">HTML</span>
+                    </div>
+                    <div class="flex flex-col items-center gap-2 group/icon cursor-default" title="React">
+                    <svg class="w-8 h-8 sm:w-10 sm:h-10 text-slate-400 group-hover/icon:text-cyan-400 transition-all drop-shadow-[0_0_8px_rgba(34,211,238,0)] group-hover/icon:drop-shadow-[0_0_12px_rgba(34,211,238,0.8)] group-hover/icon:-translate-y-2 group-hover/icon:scale-110 duration-300" viewBox="-11.5 -10.23174 23 20.46348" fill="none" stroke="currentColor" stroke-width="1">
+                        <circle cx="0" cy="0" r="2.05" fill="currentColor" stroke="none" />
+                        <ellipse rx="11" ry="4.2" />
+                        <ellipse rx="11" ry="4.2" transform="rotate(60)" />
+                        <ellipse rx="11" ry="4.2" transform="rotate(120)" />
+                    </svg>
+                        <span class="text-xs font-semibold text-slate-500 group-hover/icon:text-cyan-300 transition-colors tracking-wide">React</span>
+                    </div>
+                    <div class="flex flex-col items-center gap-2 group/icon cursor-default" title="PHP">
+                    <svg class="w-8 h-8 sm:w-10 sm:h-10 text-slate-400 group-hover/icon:text-cyan-400 transition-all drop-shadow-[0_0_8px_rgba(34,211,238,0)] group-hover/icon:drop-shadow-[0_0_12px_rgba(34,211,238,0.8)] group-hover/icon:-translate-y-2 group-hover/icon:scale-110 duration-300" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 1.25C5.373 1.25 0 6.262 0 12.5s5.373 11.25 12 11.25 12-5.012 12-11.25S18.627 1.25 12 1.25zM6.924 16.48H5.215l1.106-6.18h2.12c1.674 0 2.515.766 2.21 2.21-.253 1.422-1.105 2.088-2.63 2.088h-.946l-.336 1.882zM12.983 10.3h-1.503l.972-5.438h1.865c1.472 0 2.213.674 1.944 1.943-.223 1.25-.972 1.837-2.314 1.837h-.832l-.296 1.658zm3.504 6.18h-1.503l.972-5.438h1.504l-.48 2.684h1.493l.48-2.684h1.503l-.973 5.438h-1.503l-.47-2.628H15.54l-.47 2.628zm-2.258-9.675c-.223 1.25-.972 1.837-2.314 1.837h-.832l-.296 1.658h-1.503l.972-5.438h1.865c1.472 0 2.213.674 1.944 1.943z"/>
+                    </svg>
+                        <span class="text-xs font-semibold text-slate-500 group-hover/icon:text-cyan-300 transition-colors tracking-wide">PHP</span>
+                    </div>
+                    <div class="flex flex-col items-center gap-2 group/icon cursor-default" title="MySQL">
+                        <svg class="w-8 h-8 sm:w-10 sm:h-10 text-slate-400 group-hover/icon:text-cyan-400 transition-all drop-shadow-[0_0_8px_rgba(34,211,238,0)] group-hover/icon:drop-shadow-[0_0_12px_rgba(34,211,238,0.8)] group-hover/icon:-translate-y-2 group-hover/icon:scale-110 duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"/></svg>
+                        <span class="text-xs font-semibold text-slate-500 group-hover/icon:text-cyan-300 transition-colors tracking-wide">MySQL</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card de Tecnologias (Exclusivo Bot LinkedIn) -->
+            <div id="tech-stack-card-bot" class="hidden w-full rounded-2xl bg-[#0a0f1c]/60 backdrop-blur-xl border border-cyan-500/30 p-5 sm:p-6 shadow-[0_0_20px_rgba(34,211,238,0.1)] flex-col items-center justify-center relative overflow-hidden group">
+                <div class="absolute inset-0 bg-gradient-to-r from-cyan-500/5 via-transparent to-blue-500/5 opacity-50 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <h3 class="text-cyan-400/80 font-mono text-xs sm:text-sm tracking-widest mb-5 uppercase drop-shadow-[0_0_5px_rgba(34,211,238,0.5)]">Tecnologias Utilizadas</h3>
+                <div class="flex flex-wrap justify-center gap-8 sm:gap-12 relative z-10">
+                    <div class="flex flex-col items-center gap-2 group/icon cursor-default" title="Python">
+                        <svg class="w-8 h-8 sm:w-10 sm:h-10 text-slate-400 group-hover/icon:text-cyan-400 transition-all drop-shadow-[0_0_8px_rgba(34,211,238,0)] group-hover/icon:drop-shadow-[0_0_12px_rgba(34,211,238,0.8)] group-hover/icon:-translate-y-2 group-hover/icon:scale-110 duration-300" viewBox="0 0 448 512" fill="currentColor"><path d="M439.8 200.5c-7.7-30.9-22.3-54.2-53.4-54.2h-40.1v47.4c0 36.8-31.2 67.8-66.8 67.8H172.7c-29.2 0-53.4 25-53.4 54.3v101.8c0 29 25.2 46 53.4 54.3 33.8 9.9 66.3 11.7 106.8 0 26.9-7.8 53.4-23.5 53.4-54.3v-40.7H226.2v-13.6h160.2c31.1 0 42.6-21.7 53.4-54.2 11.2-33.5 10.7-65.7 0-108.6zM286.2 404c11.1 0 20.1 9.1 20.1 20.3 0 11.3-9 20.4-20.1 20.4-11 0-20.1-9.2-20.1-20.4.1-11.3 9.1-20.3 20.1-20.3zM167.8 248.1h106.8c29.7 0 53.4-25.1 53.4-54.3V91.9c0-29-23.1-54.3-53.4-54.3H167.8c-44.8 0-80.8 17.3-106.8 54.3-27.1 38.5-22.8 91.9 0 127.6 19.3 30.1 49.3 28.6 106.8 28.6zm45.9-135.5c-11.1 0-20.1-9.1-20.1-20.3 0-11.3 9-20.4 20.1-20.4 11 0 20.1 9.2 20.1 20.4.1 11.3-9.1 20.3-20.1 20.3z"/></svg>
+                        <span class="text-xs font-semibold text-slate-500 group-hover/icon:text-cyan-300 transition-colors tracking-wide">Python</span>
+                    </div>
+                    <div class="flex flex-col items-center gap-2 group/icon cursor-default" title="Selenium">
+                        <svg class="w-8 h-8 sm:w-10 sm:h-10 text-slate-400 group-hover/icon:text-cyan-400 transition-all drop-shadow-[0_0_8px_rgba(34,211,238,0)] group-hover/icon:drop-shadow-[0_0_12px_rgba(34,211,238,0.8)] group-hover/icon:-translate-y-2 group-hover/icon:scale-110 duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><path d="M2 12h20"/><path d="M9 12l2 2 4-4"/></svg>
+                        <span class="text-xs font-semibold text-slate-500 group-hover/icon:text-cyan-300 transition-colors tracking-wide">Selenium</span>
+                    </div>
+                    <div class="flex flex-col items-center gap-2 group/icon cursor-default" title="MySQL">
+                        <svg class="w-8 h-8 sm:w-10 sm:h-10 text-slate-400 group-hover/icon:text-cyan-400 transition-all drop-shadow-[0_0_8px_rgba(34,211,238,0)] group-hover/icon:drop-shadow-[0_0_12px_rgba(34,211,238,0.8)] group-hover/icon:-translate-y-2 group-hover/icon:scale-110 duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"/></svg>
+                        <span class="text-xs font-semibold text-slate-500 group-hover/icon:text-cyan-300 transition-colors tracking-wide">MySQL</span>
+                    </div>
+                    <div class="flex flex-col items-center gap-2 group/icon cursor-default" title="Discord Webhook">
+                        <svg class="w-8 h-8 sm:w-10 sm:h-10 text-slate-400 group-hover/icon:text-cyan-400 transition-all drop-shadow-[0_0_8px_rgba(34,211,238,0)] group-hover/icon:drop-shadow-[0_0_12px_rgba(34,211,238,0.8)] group-hover/icon:-translate-y-2 group-hover/icon:scale-110 duration-300" viewBox="0 0 640 512" fill="currentColor"><path d="M524.531,69.836a1.5,1.5,0,0,0-.764-.7A485.065,485.065,0,0,0,404.081,32.03a1.816,1.816,0,0,0-1.923.91,337.461,337.461,0,0,0-14.9,30.6,447.848,447.848,0,0,0-134.426,0,309.541,309.541,0,0,0-15.135-30.6,1.89,1.89,0,0,0-1.924-.91A483.689,483.689,0,0,0,116.085,69.137a1.712,1.712,0,0,0-.788.676C39.068,183.651,18.186,294.69,28.43,404.354a2.016,2.016,0,0,0,.765,1.375A487.666,487.666,0,0,0,176.02,479.918a1.9,1.9,0,0,0,2.063-.276c8.3-11.39,15.3-23.32,21.573-35.6a1.88,1.88,0,0,0-1.025-2.61c-19.145-7.25-37.456-16.14-55.01-26.33a1.86,1.86,0,0,1-.137-3.13c4.13-3.11,8.21-6.3,12.16-9.59a1.87,1.87,0,0,1,1.95-.29c83.1,37.81,173.23,37.81,255.45,0a1.87,1.87,0,0,1,1.95.29c3.95,3.29,8.03,6.48,12.16,9.59a1.85,1.85,0,0,1-.14,3.13c-17.55,10.2-35.86,19.08-55.01,26.33a1.88,1.88,0,0,0-1.025,2.61c6.27,12.28,13.27,24.21,21.57,35.6a1.9,1.9,0,0,0,2.06.276A487.666,487.666,0,0,0,611.534,405.729a2.016,2.016,0,0,0,.765-1.375C624.4,281.341,598.665,172.3,524.531,69.836ZM222.491,337.58c-28.97,0-52.84-26.58-52.84-59.23s23.42-59.23,52.84-59.23c29.65,0,53.306,26.82,52.84,59.23C275.331,311,251.921,337.58,222.491,337.58Zm195.38,0c-28.97,0-52.84-26.58-52.84-59.23s23.42-59.23,52.84-59.23c29.65,0,53.306,26.82,52.84,59.23C471.171,311,447.601,337.58,417.871,337.58Z"/></svg>
+                        <span class="text-xs font-semibold text-slate-500 group-hover/icon:text-cyan-300 transition-colors tracking-wide">Discord</span>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+
+        <!-- Lado Direito: Textos e Animação -->
+        <div class="w-full lg:w-2/5 text-left flex flex-col">
+            <h1 id="project-title" class="text-3xl sm:text-4xl lg:text-6xl font-extrabold tracking-tight mb-4 lg:mb-6 text-white drop-shadow-[0_0_10px_rgba(34,211,238,0.3)]">Carregando...</h1>
+            <div class="w-20 h-1.5 bg-cyan-400 mb-8 rounded-full shadow-[0_0_10px_rgba(34,211,238,0.8)]"></div>
+            <div class="flex-grow bg-[#0a0f1c]/60 backdrop-blur-xl border border-cyan-500/30 p-6 lg:p-8 rounded-2xl shadow-[0_0_20px_rgba(34,211,238,0.1)] flex flex-col justify-center">
+                <p class="text-base md:text-lg lg:text-xl font-light leading-relaxed text-slate-300 whitespace-pre-wrap relative">
+                    <span id="project-desc"></span><span class="animate-pulse inline-block w-[2px] h-[1em] bg-cyan-400 align-middle ml-1"></span>
+                </p>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // Recupera o projeto salvo na memória
+        const projetoString = localStorage.getItem('projetoAtual');
+
+        if (!projetoString) {
+            // Se alguém tentar acessar a página direto sem clicar em um projeto, volta pro início
+            window.location.href = 'index.html';
+        } else {
+            const projeto = JSON.parse(projetoString);
+            
+            // Preenche o título de imediato
+            document.title = `${projeto.titulo} | Dantas`;
+            document.getElementById('project-title').textContent = projeto.titulo;
+            
+            // Exibe o card de tecnologias dependendo do projeto
+            const tituloProj = projeto.titulo.toLowerCase();
+            if (tituloProj.includes('e-commerce') || tituloProj.includes('ecommerce')) {
+                const techCard = document.getElementById('tech-stack-card');
+                if (techCard) techCard.classList.remove('hidden');
+                if (techCard) techCard.classList.add('flex');
+            } else if (tituloProj.includes('linkedin') || tituloProj.includes('assistente')) {
+                const techCardBot = document.getElementById('tech-stack-card-bot');
+                if (techCardBot) techCardBot.classList.remove('hidden');
+                if (techCardBot) techCardBot.classList.add('flex');
+            }
+
+            // --- LÓGICA DE ANIMAÇÃO DE DIGITAÇÃO (JS PURO) ---
+            const descElement = document.getElementById('project-desc');
+            const fullText = projeto.descricao;
+            let charIndex = 0;
+            
+            const typingInterval = setInterval(() => {
+                if (charIndex < fullText.length) {
+                    descElement.textContent += fullText.charAt(charIndex);
+                    charIndex++;
+                } else {
+                    clearInterval(typingInterval); // Para o intervalo quando acabar
+                }
+            }, 15); // Velocidade: 15 milissegundos (rápido o suficiente para textos longos)
+
+            // Animação de entrada fluida (3D e Blur)
+            setTimeout(() => {
+                const mainContent = document.getElementById('main-content');
+                if(mainContent) {
+                    mainContent.classList.remove('opacity-0', 'translate-y-12', 'scale-95', 'blur-sm');
+                    mainContent.classList.add('opacity-100', 'translate-y-0', 'scale-100', 'blur-0');
+                }
+            }, 100);
+            
+            // --- LÓGICA DE CARROSSEL PARA MÍDIA ---
+            const midiaList = Array.isArray(projeto.midia) ? projeto.midia : [projeto.midia];
+            window.currentMediaIndex = 0; // Agora a variável é global e acessível pelos botões HTML
+
+            window.renderMedia = function(index) {
+                window.currentMediaIndex = index;
+                const mediaContainer = document.getElementById('project-media-container');
+                mediaContainer.classList.add('relative', 'group');
+                const midiaUrl = midiaList[index] ? midiaList[index].trim() : '';
+                
+                let mediaHtml = '';
+                if (midiaUrl.match(/\.(mp4|webm|ogg|mov)([?#].*)?$/i)) {
+                    mediaHtml = `<video src="${midiaUrl}" controls autoplay class="w-full h-full object-contain"></video>`;
+                } else if (midiaUrl.match(/(youtube\.com\/watch\?.*v=|youtu\.be\/)([^&]+)/i)) {
+                    const ytId = midiaUrl.match(/(youtube\.com\/watch\?.*v=|youtu\.be\/)([^&]+)/i)[2];
+                    mediaHtml = `<iframe src="https://www.youtube.com/embed/${ytId}" class="w-full h-full" allowfullscreen></iframe>`;
+                } else {
+                    mediaHtml = `<img src="${midiaUrl}" alt="${projeto.titulo}" onerror="this.onerror=null; this.src='https://placehold.co/800x600?text=Foto+Invalida';" class="w-full h-full object-contain">`;
+                }
+
+                if (midiaList.length > 1) {
+                    mediaHtml += `
+                        <button onclick="renderMedia((window.currentMediaIndex - 1 + ${midiaList.length}) % ${midiaList.length})" class="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-cyan-500 text-white w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full backdrop-blur-sm transition-all z-10 font-bold text-xl md:text-2xl opacity-100 lg:opacity-0 group-hover:opacity-100 shadow-lg">&#10094;</button>
+                        <button onclick="renderMedia((window.currentMediaIndex + 1) % ${midiaList.length})" class="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-cyan-500 text-white w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full backdrop-blur-sm transition-all z-10 font-bold text-xl md:text-2xl opacity-100 lg:opacity-0 group-hover:opacity-100 shadow-lg">&#10095;</button>
+                        <div class="absolute bottom-4 flex gap-2 z-10 bg-black/30 px-3 py-2 rounded-full backdrop-blur-sm">
+                            ${midiaList.map((_, i) => `<div class="w-2.5 h-2.5 md:w-3 md:h-3 rounded-full transition-colors ${i === index ? 'bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.8)]' : 'bg-white/50'}"></div>`).join('')}
+                        </div>
+                    `;
+                }
+                mediaContainer.innerHTML = mediaHtml;
+            };
+            renderMedia(window.currentMediaIndex);
+        }
+
+        // Mantém a preferência de Dark Mode
+        const htmlElement = document.documentElement;
+        // Se o usuário tinha definido um tema na outra página (opcional dependendo de como você gerencia o state global), ele pode ser lido aqui.
+        // Como o default da sua tag HTML é class="dark", ele já inicia escuro.
+    </script>
+</body>
+</html>
