@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dantas | Neon Dashboard</title>
+    <title>Jonatha Dantas | Portfólio QA</title>
+    <meta name="description" content="Portfólio de Jonatha Dantas — Quality Assurance, automação de testes e projetos em Python/Selenium.">
     
     <!-- Importando o Tailwind CSS via CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -25,7 +26,7 @@
     <!-- Babel para transpilar JSX no navegador -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
-<body class="bg-[#030712] text-white font-sans min-h-screen selection:bg-cyan-400 selection:text-slate-900">
+<body class="bg-[#030712] text-white font-sans min-h-screen overflow-x-hidden selection:bg-cyan-400 selection:text-slate-900">
 
     <!-- O React irá injetar todo o Dashboard aqui dentro -->
     <div id="root"></div>
@@ -70,7 +71,7 @@
                   scale: isHovered ? (isMobile ? 1.02 : 1.05) : 1
                 }}
                 transition={{ type: "spring", stiffness: 100, damping: 20 }}
-              className={`relative z-20 w-28 h-28 sm:w-40 sm:h-40 rounded-full p-1 bg-gradient-to-tr from-cyan-400 to-blue-600 shadow-[0_0_30px_rgba(0,242,255,0.4)] ${isDevMode ? 'cursor-pointer' : 'default'}`}
+              className={`relative z-20 w-28 h-28 sm:w-40 sm:h-40 rounded-full p-1 bg-gradient-to-tr from-cyan-400 to-blue-600 shadow-[0_0_30px_rgba(0,242,255,0.4)] ${isDevMode ? 'cursor-pointer' : 'cursor-default'}`}
                 onClick={onProfileClick}
               >
                 <div className="w-full h-full rounded-full overflow-hidden border-[4px] border-[#030712] bg-[#020617]">
@@ -129,15 +130,31 @@
         const [projects, setProjects] = useState([
           {
             title: "E-commerce: Plataforma Completa",
+            excerpt: "Loja online com vitrine para o cliente e painel administrativo completo para o lojista.",
             description: "Este projeto é uma solução completa para quem deseja vender pela internet, unindo uma loja visualmente atraente para o cliente a um painel de controle potente para o lojista.\n\nPara o Cliente: Desenvolvi uma vitrine moderna e organizada por categorias (como moda masculina, feminina e eletrônicos), facilitando a busca por produtos e proporcionando uma navegação fluida e intuitiva.\n\nPara o Lojista: Criei um painel administrativo onde é possível gerenciar todo o negócio em um só lugar. É possível cadastrar produtos com fotos e descrições detalhadas, controlar o estoque em tempo real, organizar categorias e acompanhar o desempenho das vendas de forma simples e rápida.",
-            media: ["https://rubot-files.softcom.services/ShareX/2026/04/09.04.2026_21.46.50_REC.mp4"]
+            media: ["https://rubot-files.softcom.services/ShareX/2026/04/09.04.2026_21.46.50_REC.mp4"],
+            category: "Full Stack",
+            tags: ["HTML", "React", "PHP", "MySQL"]
           },
           {
             title: "Automação QA: Validação de Garantia",
+            excerpt: "Teste automatizado com Python e Selenium, validação de garantia e relatório .txt da execução.",
             description: "Projeto focado em Quality Assurance e automação de testes, demonstrando minha evolução prática em qualidade de software.\n\nDesenvolvi uma automação com Python e Selenium que realiza o cadastro de um item de forma automática, validando a garantia do produto e trazendo mais segurança ao processo — reduzindo falhas manuais e aumentando a confiabilidade dos cenários testados.\n\nApós cada execução, o fluxo gera automaticamente um relatório em arquivo .txt com todo o progresso e o resultado da automação, facilitando rastreabilidade, evidências e análise dos testes.\n\nSempre buscando evoluir em automação de testes e boas práticas de QA.",
-            media: ["https://vimeo.com/1196499631"]
+            media: ["https://vimeo.com/1196499631"],
+            category: "QA",
+            tags: ["Python", "Selenium", "Relatório .txt"]
           }
         ]);
+
+        const getProjectPreview = (proj) => {
+          const excerpt = proj.excerpt || (proj.description || '').split('\n\n')[0];
+          const tags = proj.tags || [];
+          const category = proj.category || 'Projeto';
+          const midiaList = Array.isArray(proj.media) ? proj.media : String(proj.media || '').split('\n').map(s => s.trim()).filter(Boolean);
+          const mediaUrl = midiaList[0] || '';
+          const isVideo = /\.(mp4|webm|ogg|mov)([?#].*)?$/i.test(mediaUrl) || /vimeo\.com|youtu\.be|youtube\.com/i.test(mediaUrl);
+          return { excerpt, tags, category, mediaUrl, isVideo };
+        };
 
         const [newProject, setNewProject] = useState({ title: '', media: '', description: '' });
         const [editingIndex, setEditingIndex] = useState(null);
@@ -165,8 +182,8 @@
           {
             role: 'Analista de Sistemas / Suporte',
             company: 'SOFTCOM TECNOLOGIA',
-            description: 'Atuação direta na resolução de problemas sistêmicos, análise de requisitos e suporte técnico avançado. Manipulação constante e manutenção de banco de dados relacionais para correções em lote.',
-            badges: 'UPDATE, DELETE, SELECT'
+            description: 'Atuação em suporte técnico, análise de requisitos e validação de dados com SQL. Em paralelo, desenvolvo automações e testes com foco em QA para elevar a confiabilidade dos sistemas.',
+            badges: 'SQL, SUPORTE, QA'
           }
         ]);
         // =========================================================================
@@ -345,6 +362,7 @@
                       >
                         DANTAS
                       </h1>
+                      <p className="text-cyan-400/70 text-[10px] md:text-xs font-mono tracking-[0.25em] mt-1">QA · AUTOMAÇÃO · QUALIDADE</p>
                     </div>
 
                       <a href="https://drive.google.com/file/d/11D7m-Ud1K5ti5qkpV5xEtcR9O0hXGSAL/view?usp=sharing" target="_blank" rel="noopener noreferrer" className="mt-1 mb-1 inline-flex items-center gap-1 md:gap-1.5 px-3 py-1 md:px-4 md:py-1.5 rounded-full bg-cyan-500/10 border border-cyan-400 text-cyan-400 hover:bg-cyan-400 hover:text-slate-900 transition-all duration-300 text-[10px] md:text-xs font-bold tracking-widest shadow-[0_0_15px_rgba(34,211,238,0.2)] hover:shadow-[0_0_25px_rgba(34,211,238,0.6)] hover:-translate-y-1 hover:scale-105 group">
@@ -393,7 +411,7 @@
                         </div>
                         
                         <div className="mt-8 flex items-center text-cyan-400 font-mono text-sm tracking-widest drop-shadow-[0_0_5px_rgba(34,211,238,0.5)]">
-                          INICIAR MÓDULO <span className="ml-2 group-hover:translate-x-2 transition-transform">→</span>
+                          VER PROJETOS <span className="ml-2 group-hover:translate-x-2 transition-transform">→</span>
                         </div>
                       </motion.div>
 
@@ -601,9 +619,9 @@
                     <motion.button initial={{ opacity: 0, x: -50, scale: 0.5 }} animate={{ opacity: 1, x: 0, scale: 1 }} transition={{ type: "spring", bounce: 0.6, duration: 0.8 }} onClick={() => {
                       setCurrentView('dashboard');
                       window.scrollTo({ top: 0, behavior: 'smooth' });
-                    }} className="flex items-center text-cyan-400 hover:text-cyan-300 transition-colors font-bold mb-8 group tracking-wide">
-                      <svg className="w-5 h-5 mr-2 transform group-hover:-translate-x-1 transition-transform drop-shadow-[0_0_5px_rgba(34,211,238,0.5)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-                      VOLTAR AO DASHBOARD
+                    }} className="inline-flex items-center text-cyan-400 hover:text-cyan-300 transition-colors font-semibold text-sm mb-6 group">
+                      <svg className="w-4 h-4 mr-1.5 group-hover:-translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                      Voltar ao início
                     </motion.button>
 
                     {/* Formulário do Modo Dev */}
@@ -624,61 +642,73 @@
                       </motion.form>
                     )}
 
-                    {/* Grid de Projetos */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-8 pb-12">
+                    {/* Lista de Projetos */}
+                    <div className="flex flex-col gap-4 md:grid md:grid-cols-2 md:gap-6 pb-12 w-full">
                       {projects.length === 0 ? (
-                        <p className="text-slate-500 col-span-2 text-center py-12 text-lg">Nenhum registro de projeto encontrado no banco de dados local.</p>
+                        <p className="text-slate-500 text-center py-12 text-lg">Nenhum projeto cadastrado.</p>
                       ) : (
-                        projects.map((proj, idx) => (
-                          <motion.div 
+                        projects.map((proj, idx) => {
+                          const preview = getProjectPreview(proj);
+                          return (
+                          <motion.article 
                             key={idx} 
-                            initial={{ opacity: 0, y: 100, scale: 0.5, rotateX: 15 }} 
-                            animate={{ opacity: 1, y: 0, scale: 1, rotateX: 0 }} 
-                            transition={{ type: "spring", bounce: 0.5, duration: 1, delay: 0.15 * idx }}
+                            initial={{ opacity: 0, y: 24 }} 
+                            animate={{ opacity: 1, y: 0 }} 
+                            transition={{ duration: 0.4, delay: 0.08 * idx }}
                             onClick={() => {
                               localStorage.setItem('projetoAtual', JSON.stringify({
                                 titulo: proj.title,
                                 descricao: proj.description,
-                                midia: proj.media
+                                midia: proj.media,
+                                excerpt: proj.excerpt,
+                                tags: proj.tags,
+                                category: proj.category
                               }));
                               window.location.href = 'projeto.html';
                             }}
-                            className={`${glassClass} overflow-hidden group cursor-pointer hover:border-cyan-400/60 flex flex-col`}
+                            className={`${glassClass} w-full overflow-hidden group cursor-pointer hover:border-cyan-400/50 active:scale-[0.99] transition-all`}
                           >
-                            
-                            <div className="h-48 md:h-56 overflow-hidden relative border-b border-cyan-500/20">
-                              {(() => {
-                                const midiaList = Array.isArray(proj.media) ? proj.media : String(proj.media || '').split('\n').map(s=>s.trim()).filter(Boolean);
-                                const mediaUrl = midiaList[0] || '';
-                                if (mediaUrl.match(/\.(mp4|webm|ogg|mov)([?#].*)?$/i)) {
-                                  return <video src={mediaUrl} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" autoPlay loop muted playsInline></video>;
-                            } else if (mediaUrl.match(/(youtube\.com\/watch\?.*v=|youtu\.be\/)([^&]+)/i)) {
-                              const ytId = mediaUrl.match(/(youtube\.com\/watch\?.*v=|youtu\.be\/)([^&]+)/i)[2];
-                                  return <img src={`https://img.youtube.com/vi/${ytId}/hqdefault.jpg`} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />;
-                                } else if (mediaUrl.match(/vimeo\.com\/(?:video\/)?(\d+)/i)) {
-                                  const vimeoId = mediaUrl.match(/vimeo\.com\/(?:video\/)?(\d+)/i)[1];
-                                  return <img src={`https://vumbnail.com/${vimeoId}.jpg`} alt="Vídeo Vimeo" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />;
-                                } else {
-                                  return <img src={mediaUrl} alt={proj.title} onError={(e)=>{e.target.onerror=null; e.target.src='https://placehold.co/600x400/0b1221/06b6d4?text=SEM+SINAL';}} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />;
-                                }
-                              })()}
-                              <div className="absolute inset-0 bg-gradient-to-t from-[#0a0f1c] to-transparent opacity-90 group-hover:opacity-60 transition-opacity duration-500"></div>
-                            </div>
-                            
-                            <div className="p-4 md:p-8 flex-grow flex flex-col relative">
-                              <h3 className="text-lg md:text-2xl font-bold text-white mb-2 md:mb-3 group-hover:text-cyan-400 transition-colors drop-shadow-[0_0_5px_rgba(34,211,238,0.2)]">{proj.title}</h3>
-                              <p className="text-slate-400 text-xs md:text-sm line-clamp-3 mb-4 md:mb-6 flex-grow leading-relaxed">{proj.description}</p>
-                              <span className="text-cyan-400 text-xs md:text-sm font-bold tracking-widest flex items-center mt-auto">ACESSAR LOG <span className="ml-2 group-hover:translate-x-2 transition-transform drop-shadow-[0_0_5px_rgba(34,211,238,0.8)]">→</span></span>
-
-                              {isDevMode && (
-                                <div className="absolute top-2 right-2 md:top-4 md:right-4 flex gap-1.5 md:gap-3 opacity-100 lg:opacity-0 group-hover:opacity-100 transition-opacity">
-                                  <button onClick={(e) => editProject(idx, e)} className="bg-[#030712]/80 text-cyan-400 hover:text-slate-900 hover:bg-cyan-400 p-2 md:p-2.5 text-xs md:text-base rounded-lg backdrop-blur-md transition-all border border-cyan-500/30" title="Editar Projeto">✏️</button>
-                                  <button onClick={(e) => deleteProject(idx, e)} className="bg-[#030712]/80 text-red-400 hover:text-white hover:bg-red-600 p-2 md:p-2.5 text-xs md:text-base rounded-lg backdrop-blur-md transition-all border border-red-500/30" title="Deletar Projeto">🗑️</button>
-                                </div>
+                            <div className="relative aspect-[16/9] max-h-[200px] md:max-h-[220px] overflow-hidden bg-black/40 border-b border-cyan-500/15">
+                              {preview.mediaUrl.match(/\.(mp4|webm|ogg|mov)([?#].*)?$/i) ? (
+                                <video src={preview.mediaUrl} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" autoPlay loop muted playsInline></video>
+                              ) : preview.mediaUrl.match(/(youtube\.com\/watch\?.*v=|youtu\.be\/)([^&]+)/i) ? (
+                                <img src={`https://img.youtube.com/vi/${preview.mediaUrl.match(/(youtube\.com\/watch\?.*v=|youtu\.be\/)([^&]+)/i)[2]}/hqdefault.jpg`} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                              ) : preview.mediaUrl.match(/vimeo\.com\/(?:video\/)?(\d+)/i) ? (
+                                <img src={`https://vumbnail.com/${preview.mediaUrl.match(/vimeo\.com\/(?:video\/)?(\d+)/i)[1]}.jpg`} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                              ) : (
+                                <img src={preview.mediaUrl} alt={proj.title} onError={(e)=>{e.target.onerror=null; e.target.src='https://placehold.co/800x450/0b1221/06b6d4?text=Projeto';}} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                              )}
+                              {preview.isVideo && (
+                                <span className="absolute bottom-2 right-2 px-2 py-0.5 rounded bg-black/70 text-[10px] font-bold text-cyan-300 border border-cyan-500/30">▶ Vídeo</span>
                               )}
                             </div>
-                          </motion.div>
-                        ))
+
+                            <div className="p-4 space-y-3 relative">
+                              <div className="flex items-start justify-between gap-2">
+                                <span className={`shrink-0 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide border ${preview.category === 'QA' ? 'bg-teal-500/10 text-teal-300 border-teal-500/25' : 'bg-cyan-500/10 text-cyan-300 border-cyan-500/25'}`}>{preview.category}</span>
+                                {isDevMode && (
+                                  <div className="flex gap-1 shrink-0" onClick={e => e.stopPropagation()}>
+                                    <button type="button" onClick={(e) => editProject(idx, e)} className="p-1.5 rounded-lg bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 text-sm" title="Editar">✏️</button>
+                                    <button type="button" onClick={(e) => deleteProject(idx, e)} className="p-1.5 rounded-lg bg-red-500/10 text-red-400 border border-red-500/30 text-sm" title="Excluir">🗑️</button>
+                                  </div>
+                                )}
+                              </div>
+                              <h3 className="text-base sm:text-lg font-bold text-white leading-snug group-hover:text-cyan-300 transition-colors">{proj.title}</h3>
+                              <p className="text-slate-400 text-sm leading-relaxed line-clamp-2">{preview.excerpt}</p>
+                              {preview.tags.length > 0 && (
+                                <div className="flex flex-wrap gap-1.5">
+                                  {preview.tags.map((tag, tIdx) => (
+                                    <span key={tIdx} className="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-[#030712]/80 text-slate-300 border border-cyan-500/20">{tag}</span>
+                                  ))}
+                                </div>
+                              )}
+                              <p className="text-cyan-400 text-sm font-semibold pt-1 group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
+                                Ver projeto <span>→</span>
+                              </p>
+                            </div>
+                          </motion.article>
+                          );
+                        })
                       )}
                     </div>
                   </motion.div>
@@ -687,9 +717,9 @@
 
                 {/* Rodapé com Redes Sociais */}
                 <motion.footer 
-                  initial={{ opacity: 0, y: 100, scale: 0.1 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  transition={{ type: "spring", bounce: 0.6, duration: 1, delay: 0.5 }}
+                  initial={{ opacity: 0, y: 24 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.3 }}
                   className="mt-12 md:mt-16 pb-4 flex flex-col items-center justify-center relative z-10"
                 >
                   <div>
