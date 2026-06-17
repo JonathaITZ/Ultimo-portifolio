@@ -26,13 +26,14 @@ export default function Portfolio() {
     },
     {
       title: "Testes E2E com Cypress: Login e Carrinho",
-      description: "Projeto de estudos em Quality Assurance com Cypress para testes automatizados voltados ao front-end web. Montei minha primeira suíte E2E no site de prática Sauce Demo (Swag Labs), cobrindo cenários reais de uso.\n\nO que aprendi e apliquei:\n• Sintaxe básica do Cypress (cy.visit, cy.get, cy.type, cy.click, cy.should)\n• Criação de cenários automatizados com describe/it\n• Cobertura de caminho feliz e caminho triste (sucesso e erro)\n• Localização de elementos no HTML (#user-name, data-test, classes CSS)\n• Asserções de URL, visibilidade e conteúdo da página\n\nTestes implementados:\n• login.cy.js — login com sucesso e login inválido com validação da mensagem de erro\n• carrinho.cy.js — fluxo completo: login, adicionar item ao carrinho e verificar produto na sacola",
+      description: "Projeto de estudos em Quality Assurance com Cypress 15.x para testes automatizados de front-end web. Montei minha primeira suíte E2E no site de prática Sauce Demo (Swag Labs), cobrindo cenários reais de uso.\n\nO que aprendi e apliquei:\n• Sintaxe básica do Cypress (cy.visit, cy.get, cy.type, cy.click, cy.should)\n• Criação de cenários com describe/it — caminho feliz e caminho triste\n• Localização de elementos por seletores CSS e data-test\n• Execução via interface gráfica (cypress:open) e linha de comando (cypress:run)\n\nTestes implementados:\n• login.cy.js — login com sucesso e login inválido\n• carrinho.cy.js — adicionar item ao carrinho e validar produto na sacola\n\nO código-fonte, README com instruções de execução (npm install, npx cypress install) e a estrutura completa do projeto estão no repositório GitHub.\n\nPróximos passos: comandos customizados, mais cenários e integração com CI/CD.",
       media: [
         "assets/cypress/login-runner.png",
         "assets/cypress/login-codigo.png",
         "assets/cypress/carrinho-runner.png",
         "assets/cypress/carrinho-codigo.png"
-      ]
+      ],
+      repoUrl: "https://github.com/JonathaITZ/testes-automatizados-cypress"
     }
   ]);
   // =========================================================================
