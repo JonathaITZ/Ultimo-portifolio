@@ -23,8 +23,8 @@
     <!-- Framer Motion para animações -->
     <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
 
-    <!-- Babel para transpilar JSX no navegador -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Babel para transpilar JSX no navegador (versão fixa + runtime clássico) -->
+    <script src="https://unpkg.com/@babel/standalone@7.24.7/babel.min.js"></script>
 </head>
 <body class="bg-[#030712] text-white font-sans min-h-screen overflow-x-hidden selection:bg-cyan-400 selection:text-slate-900">
 
@@ -32,7 +32,8 @@
     <div id="root"></div>
     
     <!-- Código React embutido para evitar o bloqueio de segurança (CORS) da tela branca -->
-    <script type="text/babel">
+    <script type="text/babel" data-presets="react">
+      /** @jsx React.createElement */
       const { useState, useEffect, useRef } = React;
       const { motion, AnimatePresence } = window.Motion || window.FramerMotion;
 
@@ -143,6 +144,19 @@
             media: ["https://vimeo.com/1196499631"],
             category: "QA",
             tags: ["Python", "Selenium", "Relatório .txt"]
+          },
+          {
+            title: "Testes E2E com Cypress: Login e Carrinho",
+            excerpt: "Primeira suíte de testes automatizados no front-end com Cypress — login (sucesso e erro) e fluxo de carrinho no Sauce Demo.",
+            description: "Projeto de estudos em Quality Assurance com Cypress para testes automatizados voltados ao front-end web. Montei minha primeira suíte E2E no site de prática Sauce Demo (Swag Labs), cobrindo cenários reais de uso.\n\nO que aprendi e apliquei:\n• Sintaxe básica do Cypress (cy.visit, cy.get, cy.type, cy.click, cy.should)\n• Criação de cenários automatizados com describe/it\n• Cobertura de caminho feliz e caminho triste (sucesso e erro)\n• Localização de elementos no HTML (#user-name, data-test, classes CSS)\n• Asserções de URL, visibilidade e conteúdo da página\n\nTestes implementados:\n• login.cy.js — login com sucesso e login inválido com validação da mensagem de erro\n• carrinho.cy.js — fluxo completo: login, adicionar item ao carrinho e verificar produto na sacola\n\nAinda estou no início, mas já consigo estruturar testes E2E de forma intuitiva. Próximos passos: comandos customizados, mais cenários e melhor organização do projeto.",
+            media: [
+              "assets/cypress/login-runner.png",
+              "assets/cypress/login-codigo.png",
+              "assets/cypress/carrinho-runner.png",
+              "assets/cypress/carrinho-codigo.png"
+            ],
+            category: "QA",
+            tags: ["Cypress", "JavaScript", "E2E", "Assertions"]
           }
         ]);
 
@@ -170,6 +184,7 @@
           { name: 'Testes Manuais', icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6 md:w-10 md:h-10 text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.8)]"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><path d="M9 14l2 2 4-4"/></svg> },
           { name: 'Casos de Teste', icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6 md:w-10 md:h-10 text-blue-400 drop-shadow-[0_0_8px_rgba(96,165,250,0.8)]"><path d="M11 18H3"/><path d="M11 6H3"/><path d="M11 12H3"/><path d="M15 6h6"/><path d="M19 10l2 2-2 2"/><path d="M15 18h6"/><path d="M19 14l2 2-2 2"/></svg> },
           { name: 'Automação (Python/Selenium)', icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6 md:w-10 md:h-10 text-green-400 drop-shadow-[0_0_8px_rgba(74,222,128,0.8)]"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg> },
+          { name: 'Cypress', icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6 md:w-10 md:h-10 text-emerald-400 drop-shadow-[0_0_8px_rgba(52,211,153,0.8)]"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/><path d="m9 9 6 6"/><path d="m15 9-6 6"/></svg> },
           { name: 'Testes de API (Postman)', icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6 md:w-10 md:h-10 text-orange-400 drop-shadow-[0_0_8px_rgba(251,146,60,0.8)]"><path d="M8 3H7a2 2 0 0 0-2 2v5a2 2 0 0 1-2 2 2 2 0 0 1 2 2v5a2 2 0 0 0 2 2h1"/><path d="M16 21h1a2 2 0 0 0 2-2v-5a2 2 0 0 1 2-2 2 2 0 0 1-2-2V5a2 2 0 0 0-2-2h-1"/></svg> },
           { name: 'SQL (Validação de Dados)', icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6 md:w-10 md:h-10 text-indigo-400 drop-shadow-[0_0_8px_rgba(129,140,248,0.8)]"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3"/></svg> },
           { name: 'Smoke & Regressão', icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6 md:w-10 md:h-10 text-purple-400 drop-shadow-[0_0_8px_rgba(192,132,252,0.8)]"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></svg> },

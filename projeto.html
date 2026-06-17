@@ -93,12 +93,19 @@
                 { name: 'Selenium', color: 'border-[#43B02A]/50 bg-[#43B02A]/15', icon: '<span class="text-sm font-extrabold text-[#5fd35f]">Se</span>' },
                 { name: 'Relatório', color: 'border-amber-400/40 bg-amber-500/10', icon: '<svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path stroke-linecap="round" stroke-linejoin="round" d="m9 15 2 2 4-4"/></svg>' },
             ],
+            cypress: [
+                { name: 'Cypress', color: 'border-emerald-400/40 bg-emerald-500/15', icon: '<span class="text-sm font-extrabold text-emerald-300">Cy</span>' },
+                { name: 'JavaScript', color: 'border-yellow-400/40 bg-yellow-500/10', icon: '<span class="text-sm font-extrabold text-yellow-300">JS</span>' },
+                { name: 'E2E', color: 'border-cyan-400/40 bg-cyan-400/10', icon: '<svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 17h16"/><path stroke-linecap="round" stroke-linejoin="round" d="M7 11h10"/><path stroke-linecap="round" stroke-linejoin="round" d="M10 7h4"/></svg>' },
+                { name: 'Assertions', color: 'border-teal-400/40 bg-teal-500/10', icon: '<svg class="w-5 h-5 text-teal-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m9 12 2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>' },
+            ],
         };
 
         function getProjectType(titulo) {
             const t = titulo.toLowerCase();
             if (t.includes('e-commerce') || t.includes('ecommerce')) return 'ecommerce';
             if (t.includes('linkedin') || t.includes('assistente')) return 'bot';
+            if (t.includes('cypress')) return 'cypress';
             if (t.includes('automação') || t.includes('automacao') || t.includes('garantia') || t.includes('qa')) return 'qa';
             return null;
         }
@@ -192,6 +199,7 @@
 
             const subtitles = {
                 qa: 'Automação com Python e Selenium + relatório .txt',
+                cypress: 'Testes E2E de login e carrinho no Sauce Demo',
                 ecommerce: 'Loja + painel administrativo',
                 bot: 'Bot com integrações automatizadas',
             };

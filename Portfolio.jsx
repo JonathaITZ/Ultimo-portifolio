@@ -23,6 +23,16 @@ export default function Portfolio() {
       title: "Assistente Inteligente de Candidaturas para o LinkedIn",
       description: "Esta ferramenta foi criada para otimizar o processo de busca por emprego, automatizando a parte repetitiva e burocrática. O sistema identifica oportunidades que aceitam a \"Candidatura Simplificada\" e realiza o envio do perfil de forma automática.\n\nO que faz: Varre a rede em busca de vagas que se encaixam no perfil desejado e preenche as candidaturas instantaneamente.\n\nDiferencial: Permite que o profissional foque no que realmente importa — a preparação para entrevistas e o estudo técnico — enquanto a ferramenta cuida do volume de aplicações, garantindo que nenhuma oportunidade seja perdida por falta de tempo.",
       media: ["https://rubot-files.softcom.services/ShareX/2026/04/Z68w2IuF5F.png", "https://rubot-files.softcom.services/ShareX/2026/04/iDXv2ZEcoM.png"]
+    },
+    {
+      title: "Testes E2E com Cypress: Login e Carrinho",
+      description: "Projeto de estudos em Quality Assurance com Cypress para testes automatizados voltados ao front-end web. Montei minha primeira suíte E2E no site de prática Sauce Demo (Swag Labs), cobrindo cenários reais de uso.\n\nO que aprendi e apliquei:\n• Sintaxe básica do Cypress (cy.visit, cy.get, cy.type, cy.click, cy.should)\n• Criação de cenários automatizados com describe/it\n• Cobertura de caminho feliz e caminho triste (sucesso e erro)\n• Localização de elementos no HTML (#user-name, data-test, classes CSS)\n• Asserções de URL, visibilidade e conteúdo da página\n\nTestes implementados:\n• login.cy.js — login com sucesso e login inválido com validação da mensagem de erro\n• carrinho.cy.js — fluxo completo: login, adicionar item ao carrinho e verificar produto na sacola",
+      media: [
+        "assets/cypress/login-runner.png",
+        "assets/cypress/login-codigo.png",
+        "assets/cypress/carrinho-runner.png",
+        "assets/cypress/carrinho-codigo.png"
+      ]
     }
   ]);
   // =========================================================================

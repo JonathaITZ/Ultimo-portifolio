@@ -151,7 +151,32 @@ export default function FuturisticProjectPage({ project, onBack, isDarkMode, tog
                 </div>
               </div>
             )}
-          </div>
+
+            {/* Card de Tecnologias (Exclusivo para Cypress) */}
+            {project.title.toLowerCase().includes('cypress') && (
+              <div className="w-full rounded-2xl bg-[#0a0f1c]/60 backdrop-blur-xl border border-cyan-500/30 p-5 sm:p-6 shadow-[0_0_20px_rgba(34,211,238,0.1)] flex flex-col items-center justify-center relative overflow-hidden group">
+                <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 via-transparent to-blue-500/5 opacity-50 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <h3 className="text-cyan-400/80 font-mono text-xs sm:text-sm tracking-widest mb-5 uppercase drop-shadow-[0_0_5px_rgba(34,211,238,0.5)]">Tecnologias Utilizadas</h3>
+                <div className="flex flex-wrap justify-center gap-8 sm:gap-12 relative z-10">
+                  <div className="flex flex-col items-center gap-2 group/icon cursor-default" title="Cypress">
+                    <svg className="w-8 h-8 sm:w-10 sm:h-10 text-slate-400 group-hover/icon:text-emerald-400 transition-all drop-shadow-[0_0_8px_rgba(34,211,238,0)] group-hover/icon:drop-shadow-[0_0_12px_rgba(52,211,153,0.8)] group-hover/icon:-translate-y-2 group-hover/icon:scale-110 duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>
+                    <span className="text-xs font-semibold text-slate-500 group-hover/icon:text-emerald-300 transition-colors tracking-wide">Cypress</span>
+                  </div>
+                  <div className="flex flex-col items-center gap-2 group/icon cursor-default" title="JavaScript">
+                    <svg className="w-8 h-8 sm:w-10 sm:h-10 text-slate-400 group-hover/icon:text-yellow-400 transition-all drop-shadow-[0_0_8px_rgba(34,211,238,0)] group-hover/icon:drop-shadow-[0_0_12px_rgba(250,204,21,0.8)] group-hover/icon:-translate-y-2 group-hover/icon:scale-110 duration-300" viewBox="0 0 448 512" fill="currentColor"><path d="M0 32v448h448V32H0zm243.2 349.5c-5.5 27.6-21.9 42.5-48.5 42.5-33.4 0-53.2-21.2-61.7-50.1l31.9-12.8c3.4 12.8 11.7 22.6 27.1 22.6 11.5 0 18.8-5.7 18.8-13.5 0-9.4-7.4-12.7-20-17.2l-6.9-2.9c-20.1-8.6-33.4-19.3-33.4-42.2 0-21 16-37 41.1-37 17.8 0 30.7 6.2 39.5 22.4l-30.3 12.4c-3.7-11.3-7.7-15.7-17.5-15.7-8 0-13.1 5-13.1 10.3 0 7.2 5.7 10.1 18.8 14.5l6.9 2.9c23.7 10.1 37.1 20.4 37.1 43.7 0 25.2-19.8 39-46.1 39zM112.2 142.5h73.5l-12.1 69.9h61.5L291.5 142.5h-73.5l-7.7 44.3-7.7-44.3h-73.5l12.1 69.9h-61.5z"/></svg>
+                    <span className="text-xs font-semibold text-slate-500 group-hover/icon:text-yellow-300 transition-colors tracking-wide">JavaScript</span>
+                  </div>
+                  <div className="flex flex-col items-center gap-2 group/icon cursor-default" title="E2E">
+                    <svg className="w-8 h-8 sm:w-10 sm:h-10 text-slate-400 group-hover/icon:text-cyan-400 transition-all drop-shadow-[0_0_8px_rgba(34,211,238,0)] group-hover/icon:drop-shadow-[0_0_12px_rgba(34,211,238,0.8)] group-hover/icon:-translate-y-2 group-hover/icon:scale-110 duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 17h16"/><path d="M7 11h10"/><path d="M10 7h4"/></svg>
+                    <span className="text-xs font-semibold text-slate-500 group-hover/icon:text-cyan-300 transition-colors tracking-wide">E2E</span>
+                  </div>
+                  <div className="flex flex-col items-center gap-2 group/icon cursor-default" title="Assertions">
+                    <svg className="w-8 h-8 sm:w-10 sm:h-10 text-slate-400 group-hover/icon:text-teal-400 transition-all drop-shadow-[0_0_8px_rgba(34,211,238,0)] group-hover/icon:drop-shadow-[0_0_12px_rgba(45,212,191,0.8)] group-hover/icon:-translate-y-2 group-hover/icon:scale-110 duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 12 2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
+                    <span className="text-xs font-semibold text-slate-500 group-hover/icon:text-teal-300 transition-colors tracking-wide">Assertions</span>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Lado Direito: Textos e Animação */}
