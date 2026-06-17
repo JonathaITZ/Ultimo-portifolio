@@ -123,6 +123,7 @@
         
         // Novos Estados para a página de Projetos e Formulário
         const [currentView, setCurrentView] = useState('dashboard'); // 'dashboard' ou 'projects'
+        const [projectFilter, setProjectFilter] = useState('all');
         
         // =========================================================================
         // DADOS HARDCODED (CÓDIGO-FONTE)
@@ -133,6 +134,7 @@
             title: "E-commerce: Plataforma Completa",
             excerpt: "Loja online com vitrine para o cliente e painel administrativo completo para o lojista.",
             description: "Este projeto é uma solução completa para quem deseja vender pela internet, unindo uma loja visualmente atraente para o cliente a um painel de controle potente para o lojista.\n\nPara o Cliente: Desenvolvi uma vitrine moderna e organizada por categorias (como moda masculina, feminina e eletrônicos), facilitando a busca por produtos e proporcionando uma navegação fluida e intuitiva.\n\nPara o Lojista: Criei um painel administrativo onde é possível gerenciar todo o negócio em um só lugar. É possível cadastrar produtos com fotos e descrições detalhadas, controlar o estoque em tempo real, organizar categorias e acompanhar o desempenho das vendas de forma simples e rápida.",
+            banner: "assets/banners/ecommerce.png",
             media: ["https://rubot-files.softcom.services/ShareX/2026/04/09.04.2026_21.46.50_REC.mp4"],
             category: "Full Stack",
             tags: ["HTML", "React", "PHP", "MySQL"]
@@ -141,6 +143,7 @@
             title: "Automação QA: Validação de Garantia",
             excerpt: "Teste automatizado com Python e Selenium, validação de garantia e relatório .txt da execução.",
             description: "Projeto focado em Quality Assurance e automação de testes, demonstrando minha evolução prática em qualidade de software.\n\nDesenvolvi uma automação com Python e Selenium que realiza o cadastro de um item de forma automática, validando a garantia do produto e trazendo mais segurança ao processo — reduzindo falhas manuais e aumentando a confiabilidade dos cenários testados.\n\nApós cada execução, o fluxo gera automaticamente um relatório em arquivo .txt com todo o progresso e o resultado da automação, além de screenshots de evidência em caso de sucesso ou falha.\n\nO código-fonte e o README com detalhes do fluxo estão disponíveis no repositório GitHub.",
+            banner: "assets/banners/qa-garantia.png",
             media: ["https://vimeo.com/1196499631"],
             category: "QA",
             tags: ["Python", "Selenium", "Relatório .txt"],
@@ -150,6 +153,7 @@
             title: "Testes E2E com Cypress: Login e Carrinho",
             excerpt: "Primeira suíte de testes automatizados no front-end com Cypress — login (sucesso e erro) e fluxo de carrinho no Sauce Demo.",
             description: "Projeto de estudos em Quality Assurance com Cypress 15.x para testes automatizados de front-end web. Montei minha primeira suíte E2E no site de prática Sauce Demo (Swag Labs), cobrindo cenários reais de uso.\n\nO que aprendi e apliquei:\n• Sintaxe básica do Cypress (cy.visit, cy.get, cy.type, cy.click, cy.should)\n• Criação de cenários com describe/it — caminho feliz e caminho triste\n• Localização de elementos por seletores CSS e data-test\n• Execução via interface gráfica (cypress:open) e linha de comando (cypress:run)\n\nTestes implementados:\n• login.cy.js — login com sucesso e login inválido\n• carrinho.cy.js — adicionar item ao carrinho e validar produto na sacola\n\nO código-fonte, README com instruções de execução (npm install, npx cypress install) e a estrutura completa do projeto estão no repositório GitHub.\n\nPróximos passos: comandos customizados, mais cenários e integração com CI/CD.",
+            banner: "assets/banners/cypress-e2e.png",
             media: [
               "assets/cypress/login-runner.png",
               "assets/cypress/login-codigo.png",
@@ -162,14 +166,49 @@
           }
         ]);
 
+        const getProjectFilterKey = (category) => {
+          const c = String(category || '').toLowerCase();
+          if (c.includes('qa') || c.includes('automação') || c.includes('automacao')) return 'qa';
+          if (c.includes('full') || c.includes('stack') || c.includes('e-commerce') || c.includes('ecommerce')) return 'fullstack';
+          return 'other';
+        };
+
         const getProjectPreview = (proj) => {
           const excerpt = proj.excerpt || (proj.description || '').split('\n\n')[0];
           const tags = proj.tags || [];
           const category = proj.category || 'Projeto';
+          const filterKey = getProjectFilterKey(category);
+          const isQa = filterKey === 'qa';
           const midiaList = Array.isArray(proj.media) ? proj.media : String(proj.media || '').split('\n').map(s => s.trim()).filter(Boolean);
           const mediaUrl = midiaList[0] || '';
+          const bannerUrl = String(proj.banner || '').trim();
+          const hasBanner = Boolean(bannerUrl);
+          const cardUrl = bannerUrl || mediaUrl;
           const isVideo = /\.(mp4|webm|ogg|mov)([?#].*)?$/i.test(mediaUrl) || /vimeo\.com|youtu\.be|youtube\.com/i.test(mediaUrl);
-          return { excerpt, tags, category, mediaUrl, isVideo };
+          const isCardVideo = !hasBanner && /\.(mp4|webm|ogg|mov)([?#].*)?$/i.test(cardUrl);
+          const mediaLabel = isVideo ? 'Vídeo Demo' : (midiaList.length > 1 ? 'Galeria' : 'Preview');
+          return { excerpt, tags, category, mediaUrl, bannerUrl, cardUrl, hasBanner, isVideo, isCardVideo, filterKey, isQa, mediaLabel, midiaCount: midiaList.length };
+        };
+
+        const renderProjectCardMedia = (preview, title) => {
+          const imgClass = "w-full h-full object-cover transition-transform duration-700 group-hover:scale-105";
+          const onImgError = (e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/800x450/0b1221/06b6d4?text=Banner'; };
+
+          if (preview.hasBanner) {
+            return <img src={preview.bannerUrl} alt={`Banner — ${title}`} onError={onImgError} className={imgClass} />;
+          }
+          if (preview.isCardVideo) {
+            return <video src={preview.cardUrl} className={imgClass} autoPlay loop muted playsInline></video>;
+          }
+          if (preview.cardUrl.match(/(youtube\.com\/watch\?.*v=|youtu\.be\/)([^&]+)/i)) {
+            const id = preview.cardUrl.match(/(youtube\.com\/watch\?.*v=|youtu\.be\/)([^&]+)/i)[2];
+            return <img src={`https://img.youtube.com/vi/${id}/hqdefault.jpg`} alt="" className={imgClass} />;
+          }
+          if (preview.cardUrl.match(/vimeo\.com\/(?:video\/)?(\d+)/i)) {
+            const id = preview.cardUrl.match(/vimeo\.com\/(?:video\/)?(\d+)/i)[1];
+            return <img src={`https://vumbnail.com/${id}.jpg`} alt="" className={imgClass} />;
+          }
+          return <img src={preview.cardUrl} alt={title} onError={onImgError} className={imgClass} />;
         };
 
         const [newProject, setNewProject] = useState({ title: '', media: '', description: '' });
@@ -659,24 +698,53 @@
                       </motion.form>
                     )}
 
+                    {/* Cabeçalho e filtros da galeria */}
+                    <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
+                      <div>
+                        <h2 className="text-xl md:text-2xl font-extrabold tracking-tight text-white flex items-center gap-2">
+                          <span className="w-2 h-5 md:h-6 bg-cyan-400 rounded-full inline-block shadow-[0_0_10px_rgba(34,211,238,0.6)]"></span>
+                          Projetos em Destaque
+                        </h2>
+                        <p className="text-xs text-slate-400 mt-1">Navegue pelos trabalhos e automações que desenvolvi.</p>
+                      </div>
+                      <div className="flex gap-2 p-1.5 rounded-xl bg-[#0a0f1c]/80 border border-cyan-500/20 self-start sm:self-auto">
+                        {[
+                          { id: 'all', label: 'Todos' },
+                          { id: 'qa', label: 'QA & Automação' },
+                          { id: 'fullstack', label: 'Full Stack' },
+                        ].map((item) => (
+                          <button
+                            key={item.id}
+                            type="button"
+                            onClick={() => setProjectFilter(item.id)}
+                            className={`px-3 md:px-4 py-1.5 text-[10px] md:text-xs font-bold rounded-lg transition-all duration-300 whitespace-nowrap ${projectFilter === item.id ? 'bg-cyan-400 text-slate-950 shadow-[0_0_12px_rgba(34,211,238,0.35)]' : 'text-slate-400 hover:text-white'}`}
+                          >
+                            {item.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
                     {/* Lista de Projetos */}
-                    <div className="flex flex-col gap-4 md:grid md:grid-cols-2 md:gap-6 pb-12 w-full">
-                      {projects.length === 0 ? (
-                        <p className="text-slate-500 text-center py-12 text-lg">Nenhum projeto cadastrado.</p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 pb-12 w-full">
+                      {projects.filter((proj) => projectFilter === 'all' || getProjectFilterKey(proj.category) === projectFilter).length === 0 ? (
+                        <p className="text-slate-500 text-center py-12 text-lg col-span-full">Nenhum projeto nesta categoria.</p>
                       ) : (
-                        projects.map((proj, idx) => {
-                          const preview = getProjectPreview(proj);
-                          return (
+                        projects
+                          .map((proj, idx) => ({ proj, idx, preview: getProjectPreview(proj) }))
+                          .filter(({ preview }) => projectFilter === 'all' || preview.filterKey === projectFilter)
+                          .map(({ proj, idx, preview }, visibleIdx) => (
                           <motion.article 
                             key={idx} 
                             initial={{ opacity: 0, y: 24 }} 
                             animate={{ opacity: 1, y: 0 }} 
-                            transition={{ duration: 0.4, delay: 0.08 * idx }}
+                            transition={{ duration: 0.4, delay: 0.08 * visibleIdx }}
                             onClick={() => {
                               localStorage.setItem('projetoAtual', JSON.stringify({
                                 titulo: proj.title,
                                 descricao: proj.description,
                                 midia: proj.media,
+                                banner: proj.banner,
                                 excerpt: proj.excerpt,
                                 tags: proj.tags,
                                 category: proj.category,
@@ -684,49 +752,60 @@
                               }));
                               window.location.href = 'projeto.html';
                             }}
-                            className={`${glassClass} w-full overflow-hidden group cursor-pointer hover:border-cyan-400/50 active:scale-[0.99] transition-all`}
+                            className={`group rounded-2xl bg-[#0a0f1c]/60 backdrop-blur-md border border-white/5 overflow-hidden cursor-pointer transition-all duration-500 hover:-translate-y-1.5 active:scale-[0.99] ${preview.isQa ? 'hover:border-cyan-500/40 hover:shadow-[0_15px_30px_rgba(34,211,238,0.15)]' : 'hover:border-blue-500/40 hover:shadow-[0_15px_30px_rgba(59,130,246,0.15)]'}`}
                           >
-                            <div className="relative aspect-[16/9] max-h-[200px] md:max-h-[220px] overflow-hidden bg-black/40 border-b border-cyan-500/15">
-                              {preview.mediaUrl.match(/\.(mp4|webm|ogg|mov)([?#].*)?$/i) ? (
-                                <video src={preview.mediaUrl} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" autoPlay loop muted playsInline></video>
-                              ) : preview.mediaUrl.match(/(youtube\.com\/watch\?.*v=|youtu\.be\/)([^&]+)/i) ? (
-                                <img src={`https://img.youtube.com/vi/${preview.mediaUrl.match(/(youtube\.com\/watch\?.*v=|youtu\.be\/)([^&]+)/i)[2]}/hqdefault.jpg`} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                              ) : preview.mediaUrl.match(/vimeo\.com\/(?:video\/)?(\d+)/i) ? (
-                                <img src={`https://vumbnail.com/${preview.mediaUrl.match(/vimeo\.com\/(?:video\/)?(\d+)/i)[1]}.jpg`} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                              ) : (
-                                <img src={preview.mediaUrl} alt={proj.title} onError={(e)=>{e.target.onerror=null; e.target.src='https://placehold.co/800x450/0b1221/06b6d4?text=Projeto';}} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                              )}
-                              {preview.isVideo && (
-                                <span className="absolute bottom-2 right-2 px-2 py-0.5 rounded bg-black/70 text-[10px] font-bold text-cyan-300 border border-cyan-500/30">▶ Vídeo</span>
-                              )}
+                            <div className="relative aspect-video overflow-hidden bg-slate-950">
+                              <div className="absolute inset-0 bg-gradient-to-t from-[#0a0f1c] via-[#0a0f1c]/20 to-transparent opacity-70 z-10 pointer-events-none"></div>
+                              {renderProjectCardMedia(preview, proj.title)}
+
+                              <div className="absolute top-4 left-4 z-20">
+                                <span className={`px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase shadow-md ${preview.isQa ? 'bg-cyan-400 text-slate-950' : 'bg-blue-500 text-slate-950'}`}>
+                                  {preview.category}
+                                </span>
+                              </div>
+
+                              <div className="absolute bottom-4 right-4 z-20">
+                                <span className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-900/90 border text-[10px] font-mono uppercase font-bold tracking-widest shadow-lg ${preview.isQa ? 'border-cyan-500/30 text-cyan-400' : 'border-blue-500/30 text-blue-400'}`}>
+                                  <span className={`w-2 h-2 rounded-full ${preview.isVideo ? 'bg-rose-500 animate-pulse' : 'bg-emerald-500'}`}></span>
+                                  {preview.mediaLabel}
+                                </span>
+                              </div>
                             </div>
 
-                            <div className="p-4 space-y-3 relative">
-                              <div className="flex items-start justify-between gap-2">
-                                <span className={`shrink-0 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide border ${preview.category === 'QA' ? 'bg-teal-500/10 text-teal-300 border-teal-500/25' : 'bg-cyan-500/10 text-cyan-300 border-cyan-500/25'}`}>{preview.category}</span>
-                                {isDevMode && (
-                                  <div className="flex gap-1 shrink-0" onClick={e => e.stopPropagation()}>
-                                    <button type="button" onClick={(e) => editProject(idx, e)} className="p-1.5 rounded-lg bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 text-sm" title="Editar">✏️</button>
-                                    <button type="button" onClick={(e) => deleteProject(idx, e)} className="p-1.5 rounded-lg bg-red-500/10 text-red-400 border border-red-500/30 text-sm" title="Excluir">🗑️</button>
-                                  </div>
-                                )}
-                              </div>
-                              <h3 className="text-base sm:text-lg font-bold text-white leading-snug group-hover:text-cyan-300 transition-colors">{proj.title}</h3>
-                              <p className="text-slate-400 text-sm leading-relaxed line-clamp-2">{preview.excerpt}</p>
+                            <div className="p-5 md:p-6 relative">
+                              {isDevMode && (
+                                <div className="absolute top-4 right-4 flex gap-1.5 z-20" onClick={e => e.stopPropagation()}>
+                                  <button type="button" onClick={(e) => editProject(idx, e)} className="p-1.5 rounded-lg bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 text-sm" title="Editar">✏️</button>
+                                  <button type="button" onClick={(e) => deleteProject(idx, e)} className="p-1.5 rounded-lg bg-red-500/10 text-red-400 border border-red-500/30 text-sm" title="Excluir">🗑️</button>
+                                </div>
+                              )}
+                              <h3 className={`text-lg md:text-xl font-bold text-white mb-2 pr-16 transition-colors duration-300 ${preview.isQa ? 'group-hover:text-cyan-400' : 'group-hover:text-blue-400'}`}>
+                                {proj.title}
+                              </h3>
+                              <p className="text-sm text-slate-400 leading-relaxed mb-4 line-clamp-2">
+                                {preview.excerpt}
+                              </p>
                               {preview.tags.length > 0 && (
-                                <div className="flex flex-wrap gap-1.5">
+                                <div className="flex flex-wrap gap-2 mb-5">
                                   {preview.tags.map((tag, tIdx) => (
-                                    <span key={tIdx} className="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-[#030712]/80 text-slate-300 border border-cyan-500/20">{tag}</span>
+                                    <span key={tIdx} className="px-2.5 py-1 rounded-md text-[10px] font-mono font-bold bg-slate-900 border border-slate-800 text-slate-300">
+                                      {tag}
+                                    </span>
                                   ))}
                                 </div>
                               )}
-                              <p className="text-cyan-400 text-sm font-semibold pt-1 group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
-                                Ver projeto <span>→</span>
-                              </p>
+                              <div className="flex items-center justify-between pt-4 border-t border-slate-800/80">
+                                <span className={`inline-flex items-center gap-2 text-xs font-bold transition-all duration-300 group-hover:gap-3 ${preview.isQa ? 'text-cyan-400 group-hover:text-cyan-300' : 'text-blue-400 group-hover:text-blue-300'}`}>
+                                  Ver detalhes do projeto
+                                  <svg className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                                </span>
+                                {proj.repoUrl && (
+                                  <span className="text-[10px] font-mono text-slate-500 hidden sm:inline">GitHub</span>
+                                )}
+                              </div>
                             </div>
                           </motion.article>
-                          );
-                        })
+                          ))
                       )}
                     </div>
                   </motion.div>
