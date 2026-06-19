@@ -337,9 +337,21 @@
             badges: 'SQL, SUPORTE, QA'
           }
         ]);
+
+        const [certificates, setCertificates] = useState([
+          {
+            title: 'Testando APIs utilizando Postman',
+            institution: 'Cursa - Cursos Online',
+            date: 'Mai/2026',
+            url: 'https://cursa.app/pt/meu-certificado',
+            image: 'assets/certificates/cursa-postman.png',
+            tags: 'Postman, API, Testes de API, QA'
+          },
+        ]);
         // =========================================================================
 
         const [newExperience, setNewExperience] = useState({ role: '', company: '', description: '', badges: '' });
+        const [newCertificate, setNewCertificate] = useState({ title: '', institution: '', date: '', url: '', image: '', tags: '' });
 
         const [areasOfInterest, setAreasOfInterest] = useState([
           'QA Jr Remoto',
@@ -454,6 +466,21 @@
           if(window.confirm('Tem certeza que deseja remover esta experiência?')) {
             const updated = experiences.filter((_, i) => i !== idx);
             setExperiences(updated);
+          }
+        };
+
+        const handleAddCertificate = (e) => {
+          e.preventDefault();
+          if (!newCertificate.title || !newCertificate.institution) return;
+          const updated = [...certificates, newCertificate];
+          setCertificates(updated);
+          setNewCertificate({ title: '', institution: '', date: '', url: '', image: '', tags: '' });
+        };
+
+        const deleteCertificate = (idx) => {
+          if (window.confirm('Tem certeza que deseja remover este certificado?')) {
+            const updated = certificates.filter((_, i) => i !== idx);
+            setCertificates(updated);
           }
         };
 
@@ -576,6 +603,7 @@
                         <div className="flex justify-start md:justify-center lg:justify-start space-x-4 md:space-x-6 mb-6 border-b border-cyan-500/20 pb-2 overflow-x-auto snap-x [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                           <button onClick={() => setActiveTab('skills')} className={`pb-2 text-base md:text-lg font-bold tracking-wide transition-all whitespace-nowrap ${activeTab === 'skills' ? 'text-cyan-400 border-b-2 border-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.8)]' : 'text-slate-500 hover:text-slate-300'}`}>SKILLS</button>
                           <button onClick={() => setActiveTab('experience')} className={`pb-2 text-base md:text-lg font-bold tracking-wide transition-all whitespace-nowrap ${activeTab === 'experience' ? 'text-cyan-400 border-b-2 border-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.8)]' : 'text-slate-500 hover:text-slate-300'}`}>EXPERIÊNCIA</button>
+                          <button onClick={() => setActiveTab('certificates')} className={`pb-2 text-base md:text-lg font-bold tracking-wide transition-all whitespace-nowrap ${activeTab === 'certificates' ? 'text-cyan-400 border-b-2 border-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.8)]' : 'text-slate-500 hover:text-slate-300'}`}>CERTIFICADOS</button>
                           <button onClick={() => setActiveTab('about')} className={`pb-2 text-base md:text-lg font-bold tracking-wide transition-all whitespace-nowrap ${activeTab === 'about' ? 'text-cyan-400 border-b-2 border-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.8)]' : 'text-slate-500 hover:text-slate-300'}`}>SOBRE MIM</button>
                           <button onClick={() => setActiveTab('others')} className={`pb-2 text-base md:text-lg font-bold tracking-wide transition-all whitespace-nowrap ${activeTab === 'others' ? 'text-cyan-400 border-b-2 border-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.8)]' : 'text-slate-500 hover:text-slate-300'}`}>OUTROS</button>
                         </div>
@@ -684,6 +712,104 @@
                                       ))
                                     )}
                                   </div>
+                                </div>
+                              )}
+
+                              {activeTab === 'certificates' && (
+                                <div className="space-y-4">
+                                  {isDevMode && (
+                                    <form onSubmit={handleAddCertificate} className="mb-6 flex flex-col gap-4 bg-cyan-950/20 p-4 rounded-xl border border-cyan-500/30">
+                                      <h4 className="text-cyan-400 font-bold text-sm">➕ Novo Certificado</h4>
+                                      <input type="text" placeholder="Nome do certificado" required value={newCertificate.title} onChange={e => setNewCertificate({...newCertificate, title: e.target.value})} className="w-full p-3 rounded-lg bg-[#030712]/50 border border-cyan-500/30 text-white focus:outline-none focus:border-cyan-400" />
+                                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <input type="text" placeholder="Instituição (ex: Alura, Udemy)" required value={newCertificate.institution} onChange={e => setNewCertificate({...newCertificate, institution: e.target.value})} className="w-full p-3 rounded-lg bg-[#030712]/50 border border-cyan-500/30 text-white focus:outline-none focus:border-cyan-400" />
+                                        <input type="text" placeholder="Data (ex: Mar/2026)" value={newCertificate.date} onChange={e => setNewCertificate({...newCertificate, date: e.target.value})} className="w-full p-3 rounded-lg bg-[#030712]/50 border border-cyan-500/30 text-white focus:outline-none focus:border-cyan-400" />
+                                      </div>
+                                      <input type="url" placeholder="Link de verificação (opcional)" value={newCertificate.url} onChange={e => setNewCertificate({...newCertificate, url: e.target.value})} className="w-full p-3 rounded-lg bg-[#030712]/50 border border-cyan-500/30 text-white focus:outline-none focus:border-cyan-400" />
+                                      <input type="text" placeholder="URL da imagem do certificado (ex: assets/certificates/nome.png)" value={newCertificate.image} onChange={e => setNewCertificate({...newCertificate, image: e.target.value})} className="w-full p-3 rounded-lg bg-[#030712]/50 border border-cyan-500/30 text-white focus:outline-none focus:border-cyan-400" />
+                                      <input type="text" placeholder="Tags (separadas por vírgula. Ex: Cypress, QA)" value={newCertificate.tags} onChange={e => setNewCertificate({...newCertificate, tags: e.target.value})} className="w-full p-3 rounded-lg bg-[#030712]/50 border border-cyan-500/30 text-white focus:outline-none focus:border-cyan-400" />
+                                      <button type="submit" className="bg-cyan-400 hover:bg-cyan-300 text-slate-900 font-bold p-3 rounded-lg w-full md:w-auto self-end transition-colors">Adicionar Certificado</button>
+                                    </form>
+                                  )}
+
+                                  <h3 className="text-sm md:text-base font-semibold text-slate-300 mb-2">Certificado</h3>
+                                  <p className="text-xs text-slate-500 mb-4">Cursos e certificados relacionados à minha atuação em QA e automação de testes.</p>
+
+                                  {certificates.length === 0 ? (
+                                    <p className="text-slate-500 text-center py-8">Nenhum certificado cadastrado ainda.</p>
+                                  ) : (
+                                    <div className="grid grid-cols-1 gap-3 md:gap-4">
+                                      {certificates.map((cert, idx) => (
+                                        <div
+                                          key={`cert-${idx}`}
+                                          className="group relative flex gap-3 md:gap-4 p-4 rounded-xl bg-[#0a0f1c]/80 border border-cyan-500/25 hover:border-cyan-400/60 shadow-[0_0_12px_rgba(34,211,238,0.08)] hover:shadow-[0_0_22px_rgba(34,211,238,0.22)] transition-all duration-300"
+                                        >
+                                          {isDevMode && (
+                                            <button type="button" onClick={() => deleteCertificate(idx)} className="absolute top-2 right-2 text-red-500 hover:text-red-400 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity text-xs bg-red-500/10 px-2 py-1 rounded border border-red-500/20" title="Deletar Certificado">🗑️</button>
+                                          )}
+
+                                          {cert.image ? (
+                                            <a
+                                              href={cert.image}
+                                              target="_blank"
+                                              rel="noopener noreferrer"
+                                              onClick={e => e.stopPropagation()}
+                                              title="Ampliar certificado"
+                                              className="shrink-0 w-28 md:w-36 rounded-lg overflow-hidden border border-cyan-500/40 bg-white shadow-[0_0_14px_rgba(34,211,238,0.25)] hover:border-cyan-400/70 hover:shadow-[0_0_20px_rgba(34,211,238,0.4)] transition-all duration-300 group/img"
+                                            >
+                                              <img
+                                                src={cert.image}
+                                                alt={`Certificado — ${cert.title}`}
+                                                className="w-full h-auto object-contain group-hover/img:scale-105 transition-transform duration-300"
+                                                onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/320x220/ffffff/0ea5e9?text=Certificado'; }}
+                                              />
+                                            </a>
+                                          ) : (
+                                            <div className="w-10 h-10 md:w-11 md:h-11 rounded-xl bg-cyan-400/10 border border-cyan-500/40 flex items-center justify-center shrink-0 shadow-[0_0_14px_rgba(34,211,238,0.25)]">
+                                              <svg className="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 14l9-5-9-5-9 5 9 5z" />
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 14l6.16-3.422A12.083 12.083 0 0112 21.5 12.083 12.083 0 015.84 10.578L12 14z" />
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 14v7" />
+                                              </svg>
+                                            </div>
+                                          )}
+
+                                          <div className="flex-1 min-w-0 pr-8 md:pr-10">
+                                            <h4 className="font-bold text-white text-sm md:text-base leading-snug">{cert.title}</h4>
+                                            <p className="text-cyan-400 font-mono text-[10px] md:text-xs tracking-widest mt-1 uppercase">{cert.institution}</p>
+                                            {cert.date && <p className="text-slate-500 text-xs mt-1">{cert.date}</p>}
+
+                                            {cert.tags && (
+                                              <div className="flex flex-wrap gap-1.5 mt-2.5">
+                                                {cert.tags.split(',').map((tag, tIdx) => {
+                                                  const t = tag.trim();
+                                                  if (!t) return null;
+                                                  return (
+                                                    <span key={tIdx} className="px-2 py-0.5 text-[10px] font-mono font-bold rounded-md bg-cyan-900/40 text-cyan-300 border border-cyan-500/40">
+                                                      {t}
+                                                    </span>
+                                                  );
+                                                })}
+                                              </div>
+                                            )}
+
+                                            {cert.url && (
+                                              <a
+                                                href={cert.url}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                onClick={e => e.stopPropagation()}
+                                                className="inline-flex items-center gap-1.5 mt-3 text-[11px] md:text-xs font-bold text-cyan-400 hover:text-cyan-300 transition-colors"
+                                              >
+                                                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                                                Ver certificado
+                                              </a>
+                                            )}
+                                          </div>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  )}
                                 </div>
                               )}
 
