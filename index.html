@@ -165,10 +165,10 @@
             repoUrl: "https://github.com/JonathaITZ/testes-automatizados-cypress"
           },
           {
-            title: "Testes E2E com Cypress: OrangeHRM",
-            excerpt: "Fluxo ponta a ponta no OrangeHRM — login, cadastro de funcionário no PIM e exclusão do registro ao final.",
-            description: "Projeto de estudos com Cypress no site demo do OrangeHRM — ambiente aberto para praticar automação de testes no front-end.\n\nFluxo automatizado ponta a ponta:\n• Login no sistema com credenciais válidas (Admin / admin123)\n• Cadastro de novo funcionário no módulo PIM / Personal Details\n• Exclusão do registro ao final do teste — limpeza dos dados para não deixar resíduos no ambiente de demonstração\n\nO que esse cenário reforça na prática:\n• Automação economiza tempo e garante consistência do fluxo sem execução manual repetitiva\n• Navegação entre módulos após autenticação\n• Preenchimento de formulários e validação de ações CRUD completas\n• Execução via interface gráfica (npm run cy:open) ou linha de comando (npm run cy:run)\n\nO README no GitHub traz o passo a passo completo para clonar, instalar dependências e rodar os testes localmente.",
-            media: ["https://rubot-files.softcom.services/ShareX/2026/06/11111111111111111.mp4"],
+            title: "Testes E2E com Cypress: Login, Segurança e PIM",
+            excerpt: "Suíte de testes automatizados com Cypress no OrangeHRM demo — login válido, credenciais inválidas, proteção de rotas e cadastro de funcionário com limpeza de dados.",
+            description: "Projeto de estudos em Quality Assurance com Cypress para automação de testes no front-end web, utilizando o site demo OrangeHRM.\n\nA suíte cobre cenários reais de uso e validação de segurança, indo além do caminho feliz:\n• Login válido — autenticação com credenciais corretas e validação do acesso ao Dashboard\n• Login inválido — tentativa com senha incorreta e validação da mensagem de erro (Invalid credentials)\n• Proteção de rota — acesso direto à homepage via URL sem autenticação, confirmando redirecionamento para o login\n• PIM / Personal Details — cadastro de funcionário, salvamento dos dados e exclusão ao final do teste para manter o ambiente limpo\n\nO que apliquei:\n• Comandos Cypress: cy.visit, cy.get, cy.type, cy.click, cy.url, cy.contains, cy.should\n• Estrutura de testes com describe e it\n• Validações de URL, mensagens de erro e elementos visíveis na tela\n• Organização em arquivos separados por fluxo\n• Execução via interface gráfica (cy:open) e linha de comando (cy:run)\n\nO código-fonte e o README com instruções de execução estão disponíveis no repositório GitHub.",
+            media: ["https://vimeo.com/1203525130"],
             category: "QA",
             tags: ["Cypress", "JavaScript", "Node.js", "E2E", "OrangeHRM"],
             repoUrl: "https://github.com/JonathaITZ/cenario-de-teste-2"
