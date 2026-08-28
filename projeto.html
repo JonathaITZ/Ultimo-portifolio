@@ -3,539 +3,434 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detalhes do Projeto | Dantas</title>
+    <title>Detalhes do Projeto | Jonatha Dantas QA</title>
+    
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['Fira Code', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Three.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
     <style>
-        html, body { overflow-x: hidden; max-width: 100vw; }
-        .theater-viewport { position: relative; width: 100%; aspect-ratio: 16 / 9; background: #000; }
-        .theater-viewport .media-frame { position: absolute; inset: 0; overflow: hidden; }
+        body {
+            background-color: #030712;
+            color: #f3f4f6;
+            overflow-x: hidden;
+        }
+
+        .glass-card {
+            background: rgba(10, 15, 29, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(0, 242, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+        }
+
+        .theater-viewport {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background: #020617;
+            border-radius: 1rem;
+            overflow: hidden;
+            border: 1px solid rgba(0, 242, 255, 0.3);
+            box-shadow: 0 0 30px rgba(0, 242, 255, 0.15);
+        }
+
         .theater-viewport iframe,
         .theater-viewport video,
         .theater-viewport img {
-            position: absolute; inset: 0; width: 100%; height: 100%; border: 0; object-fit: contain; background: #000;
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+            object-fit: contain;
+            background: #020617;
         }
-        .tech-scroll { -webkit-overflow-scrolling: touch; scrollbar-width: none; }
-        .tech-scroll::-webkit-scrollbar { display: none; }
-        .tech-card {
-            flex: 0 0 auto; width: 5.5rem;
-            display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
-            padding: 0.75rem 0.5rem; border-radius: 0.75rem;
-            border: 1px solid rgba(34,211,238,0.15); background: rgba(12,18,34,0.8);
+
+        .scanlines {
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0, 242, 255, 0.04) 50%,
+                rgba(0, 242, 255, 0.04)
+            );
+            background-size: 100% 4px;
         }
-        .tech-card-icon {
-            width: 2.25rem; height: 2.25rem; border-radius: 0.5rem;
-            display: flex; align-items: center; justify-content: center; border: 1px solid;
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
         }
-        .progress-track { height: 4px; background: #1e293b; border-radius: 999px; overflow: hidden; cursor: pointer; }
-        .progress-fill { height: 100%; background: #22d3ee; width: 0%; transition: width 0.1s linear; }
-        .gallery-nav {
-            position: absolute; top: 50%; transform: translateY(-50%); z-index: 30;
-            width: 2.75rem; height: 2.75rem; border-radius: 9999px;
-            display: flex; align-items: center; justify-content: center;
-            background: rgba(6, 10, 20, 0.92); border: 2px solid rgba(34, 211, 238, 0.65);
-            color: #22d3ee; box-shadow: 0 0 24px rgba(34, 211, 238, 0.35);
-            transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.2s;
+        ::-webkit-scrollbar-track {
+            background: #030712;
         }
-        .gallery-nav:hover {
-            background: rgba(34, 211, 238, 0.2); border-color: #22d3ee; color: #fff;
-            transform: translateY(-50%) scale(1.08);
-        }
-        .gallery-nav-left { left: 0.75rem; }
-        .gallery-nav-right { right: 0.75rem; }
-        @media (min-width: 640px) {
-            .gallery-nav { width: 3.25rem; height: 3.25rem; }
-            .gallery-nav-left { left: 1rem; }
-            .gallery-nav-right { right: 1rem; }
-        }
-        .gallery-ctrl-btn {
-            display: inline-flex; align-items: center; gap: 0.35rem;
-            padding: 0.4rem 0.75rem; border-radius: 0.5rem;
-            font-size: 0.75rem; font-weight: 700; color: #22d3ee;
-            background: rgba(34, 211, 238, 0.1); border: 1px solid rgba(34, 211, 238, 0.45);
-            transition: background 0.2s, color 0.2s, border-color 0.2s;
-        }
-        .gallery-ctrl-btn:hover {
-            background: rgba(34, 211, 238, 0.25); color: #fff; border-color: #22d3ee;
-        }
-        @media (min-width: 1024px) {
-            .tech-scroll { display: grid !important; overflow: visible; }
-            .tech-card { width: auto; flex: 1; }
+        ::-webkit-scrollbar-thumb {
+            background: #00f2ff33;
+            border-radius: 4px;
         }
     </style>
 </head>
-<body class="bg-[#070A13] text-slate-100 font-sans min-h-screen selection:bg-cyan-500 selection:text-slate-900">
+<body class="selection:bg-cyan-400 selection:text-slate-950 font-sans relative min-h-screen">
 
-    <div class="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-cyan-950/10 via-transparent to-transparent pointer-events-none"></div>
-    <div class="absolute top-[20%] left-[8%] w-[380px] h-[380px] bg-cyan-600/5 rounded-full blur-[120px] pointer-events-none"></div>
-    <div class="absolute top-[35%] right-[5%] w-[300px] h-[300px] bg-blue-600/5 rounded-full blur-[120px] pointer-events-none"></div>
+    <!-- Canvas 3D de Fundo -->
+    <canvas id="bg-3d" class="fixed inset-0 pointer-events-none z-0 opacity-60"></canvas>
+    <div class="fixed inset-0 pointer-events-none z-0 scanlines opacity-30"></div>
 
-    <header class="sticky top-0 z-50 border-b border-slate-900 bg-[#070A13]/85 backdrop-blur-md">
-        <div class="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
-            <a href="index.html" class="group inline-flex items-center gap-2 text-slate-400 hover:text-cyan-400 transition-colors text-sm font-medium">
-                <svg class="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-                Voltar ao portfólio
+    <!-- Header Cibernético Fixo -->
+    <header class="sticky top-0 z-50 border-b border-cyan-500/20 bg-[#030712]/85 backdrop-blur-md">
+        <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+            <a href="index.html" class="group inline-flex items-center gap-2 text-slate-300 hover:text-cyan-400 font-mono text-xs sm:text-sm font-bold tracking-wide transition-colors">
+                <svg class="w-4 h-4 group-hover:-translate-x-1 transition-transform text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                [VOLTAR AO PORTFÓLIO]
             </a>
-            <div class="flex items-center gap-2 text-[10px] text-slate-500 font-mono uppercase tracking-wider">
-                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span>Projeto disponível</span>
+            <div class="flex items-center gap-2 text-[10px] sm:text-xs text-cyan-400 font-mono uppercase tracking-widest bg-cyan-950/60 px-3 py-1 rounded-full border border-cyan-500/30">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>QA SPEC VIEW MODE</span>
             </div>
         </div>
     </header>
 
-    <main id="main-content" class="w-full max-w-6xl mx-auto px-4 py-8 md:py-12 pb-16 relative z-10 opacity-0 transition-opacity duration-300">
+    <!-- Conteúdo Principal -->
+    <main id="main-content" class="w-full max-w-6xl mx-auto px-4 py-8 md:py-12 pb-20 relative z-10 opacity-0 transition-opacity duration-500">
 
-        <div id="project-badges" class="flex flex-wrap gap-2 mb-4"></div>
-        <h1 id="project-title" class="text-2xl md:text-4xl font-black text-white tracking-tight leading-tight mb-3">Carregando…</h1>
-        <p id="project-subtitle" class="text-slate-400 text-sm md:text-base max-w-3xl leading-relaxed mb-5"></p>
-        <div id="project-repo-link" class="hidden mb-8"></div>
+        {/* Badges e Títulos */}
+        <div id="project-badges" class="flex flex-wrap gap-2 mb-3"></div>
+        
+        <h1 id="project-title" class="text-3xl md:text-5xl font-black text-white tracking-tight leading-tight mb-3">
+            Carregando Projeto...
+        </h1>
+        
+        <p id="project-subtitle" class="text-slate-400 text-sm md:text-base max-w-3xl leading-relaxed mb-6 font-sans"></p>
+        
+        <div id="project-repo-link" class="mb-8"></div>
 
-        <!-- Área principal de mídia / vídeo -->
-        <section class="mb-10 md:mb-12">
-            <div class="relative bg-[#0C1222] border border-cyan-500/10 rounded-2xl shadow-2xl shadow-black/40 overflow-hidden">
-
-                <!-- Barra estilo navegador -->
-                <div class="bg-[#0e172a] border-b border-slate-800 px-4 py-3 flex items-center justify-between gap-3">
-                    <div class="flex items-center gap-2 min-w-0">
-                        <div class="flex gap-1.5 shrink-0">
-                            <span class="w-3 h-3 rounded-full bg-red-500/70"></span>
-                            <span class="w-3 h-3 rounded-full bg-yellow-500/70"></span>
-                            <span class="w-3 h-3 rounded-full bg-emerald-500/70"></span>
+        <!-- Seção Principal de Mídia (Theater Viewport Sci-Fi) -->
+        <section class="mb-12">
+            <div class="glass-card rounded-2xl overflow-hidden p-2 sm:p-4 border border-cyan-500/30">
+                
+                {/* Visual Header Bar */}
+                <div class="bg-slate-950 border-b border-slate-800 px-4 py-2.5 flex items-center justify-between text-xs font-mono mb-2 rounded-t-xl">
+                    <div class="flex items-center gap-2">
+                        <div class="flex gap-1.5">
+                            <span class="w-3 h-3 rounded-full bg-red-500/80"></span>
+                            <span class="w-3 h-3 rounded-full bg-yellow-500/80"></span>
+                            <span class="w-3 h-3 rounded-full bg-emerald-500/80"></span>
                         </div>
-                        <span id="theater-url" class="text-[10px] sm:text-xs text-slate-500 font-mono ml-2 sm:ml-4 truncate hidden sm:inline">demo://portfolio/dantas</span>
+                        <span id="theater-url" class="text-slate-500 ml-3 truncate hidden sm:inline text-[11px]">demo://qa-execution-runner</span>
                     </div>
-                    <span id="theater-badge" class="shrink-0 text-[10px] font-bold text-cyan-400 bg-cyan-950/60 px-2.5 py-0.5 rounded border border-cyan-500/20 uppercase tracking-wide">
-                        Demonstração
+                    <span id="theater-badge" class="text-[10px] font-bold text-cyan-300 bg-cyan-950/80 px-2.5 py-0.5 rounded border border-cyan-500/30 uppercase tracking-wider">
+                        DEMO EXECUTION
                     </span>
                 </div>
 
-                <!-- Tela do player -->
-                <div id="theater-viewport" class="theater-viewport bg-gradient-to-br from-[#0c1221] to-[#080d19]">
-                    <div id="project-media-container" class="media-frame"></div>
-                    <button type="button" id="overlay-prev" class="gallery-nav gallery-nav-left hidden" aria-label="Foto anterior">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
-                    </button>
-                    <button type="button" id="overlay-next" class="gallery-nav gallery-nav-right hidden" aria-label="Próxima foto">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
-                    </button>
+                {/* Viewport do Player */}
+                <div id="theater-viewport" class="theater-viewport">
+                    <div id="project-media-container" class="w-full h-full"></div>
                 </div>
 
-                <!-- Controles do player -->
-                <div id="theater-controls" class="bg-[#0b101c] border-t border-slate-900 px-4 py-3">
-                    <div class="flex flex-wrap items-center justify-between gap-3 text-slate-400 text-xs font-mono">
-                        <div class="flex items-center gap-3 min-w-0">
-                            <button type="button" id="btn-play" class="hidden hover:text-white transition-colors p-1" aria-label="Play/Pause">
-                                <svg id="icon-play" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                                <svg id="icon-pause" class="w-4 h-4 hidden" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-                            </button>
-                            <button type="button" id="btn-prev" class="gallery-ctrl-btn hidden" aria-label="Foto anterior">
-                                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
-                                <span class="hidden sm:inline">Anterior</span>
-                            </button>
-                            <button type="button" id="btn-next" class="gallery-ctrl-btn hidden" aria-label="Próxima foto">
-                                <span class="hidden sm:inline">Próxima</span>
-                                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
-                            </button>
-                            <span id="time-display" class="text-cyan-300/90 font-bold whitespace-nowrap">0:00 / 0:00</span>
-                            <div id="progress-wrap" class="hidden sm:block flex-1 min-w-[80px] max-w-[200px] progress-track">
-                                <div id="progress-fill" class="progress-fill"></div>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-3 shrink-0">
-                            <div id="live-indicator" class="hidden sm:flex items-center gap-1.5">
-                                <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
-                                <span id="controls-hint" class="text-slate-500">Visualizando demonstração</span>
-                            </div>
-                            <button type="button" id="btn-fullscreen" class="hover:text-white transition-colors p-1" aria-label="Tela cheia">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
-                            </button>
-                        </div>
+                {/* Controles de Mídia */}
+                <div id="theater-controls" class="bg-slate-950 border-t border-slate-900 px-4 py-3 rounded-b-xl mt-2 flex flex-wrap items-center justify-between gap-3 text-slate-400 text-xs font-mono">
+                    <div class="flex items-center gap-3">
+                        <button type="button" id="btn-play" class="hidden text-cyan-400 hover:text-white transition-colors p-1" aria-label="Play/Pause">
+                            <svg id="icon-play" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                            <svg id="icon-pause" class="w-5 h-5 hidden" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                        </button>
+
+                        <button type="button" id="btn-prev" class="hidden px-3 py-1 rounded bg-slate-900 border border-slate-800 text-cyan-400 hover:border-cyan-400 transition-all text-[11px]">
+                            ◀ Anterior
+                        </button>
+                        <button type="button" id="btn-next" class="hidden px-3 py-1 rounded bg-slate-900 border border-slate-800 text-cyan-400 hover:border-cyan-400 transition-all text-[11px]">
+                            Próximo ▶
+                        </button>
+
+                        <span id="time-display" class="text-cyan-300 font-bold">0:00 / 0:00</span>
                     </div>
+
+                    <div class="flex items-center gap-3">
+                        <button type="button" id="btn-fullscreen" class="text-slate-400 hover:text-cyan-400 transition-colors p-1" title="Modo Tela Cheia">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+            {/* Dots de Galeria */}
+            <div id="gallery-dots" class="hidden flex justify-center items-center gap-2 mt-4"></div>
+        </section>
+
+        <!-- Stack de Tecnologias Utilizadas -->
+        <section id="tech-stack-bar" class="mb-12">
+            <h2 class="text-xs font-mono font-bold text-cyan-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                <span class="h-px w-6 bg-cyan-500/40"></span>
+                STACK TÉCNICA DO PROJETO
+            </h2>
+            <div id="tech-stack-grid" class="flex flex-wrap gap-3"></div>
+        </section>
+
+        <!-- Seção de Especificações / Descrição do Projeto -->
+        <section class="glass-card rounded-2xl p-6 md:p-10 border border-cyan-500/20">
+            
+            {/* Abas Interativas */}
+            <div class="flex flex-wrap gap-2 border-b border-slate-800 pb-4 mb-6">
+                <button id="tab-btn-overview" onclick="switchTab('overview')" class="px-4 py-2 rounded-xl text-xs font-mono font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-400/50">
+                    Visão Geral do Projeto
+                </button>
+                <button id="tab-btn-scenarios" onclick="switchTab('scenarios')" class="px-4 py-2 rounded-xl text-xs font-mono text-slate-400 hover:text-white bg-slate-900/60 border border-slate-800">
+                    Cenários de Teste QA
+                </button>
+                <button id="tab-btn-terminal" onclick="switchTab('terminal')" class="px-4 py-2 rounded-xl text-xs font-mono text-slate-400 hover:text-white bg-slate-900/60 border border-slate-800">
+                    Terminal de Execução
+                </button>
+            </div>
+
+            {/* Conteúdo da Aba Overview */}
+            <div id="tab-content-overview" class="space-y-4 text-slate-300 text-sm md:text-base leading-relaxed">
+                <div id="project-desc-container" class="space-y-4"></div>
+            </div>
+
+            {/* Conteúdo da Aba Cenários QA */}
+            <div id="tab-content-scenarios" class="hidden space-y-4">
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-xs font-mono space-y-3">
+                    <div class="text-emerald-400 font-bold text-sm">✔ CAMINHO FELIZ (HAPPY PATH)</div>
+                    <p class="text-slate-300 leading-relaxed">• Autenticação de usuário com credenciais válidas e redirecionamento correto.</p>
+                    <p class="text-slate-300 leading-relaxed">• Navegação entre módulos principais e cadastro completo com persistência dos dados.</p>
+                    <p class="text-slate-300 leading-relaxed">• Validação de assertividades (Cypress assertions / Selenium waits) em cada etapa.</p>
+
+                    <div class="text-red-400 font-bold text-sm pt-3">✖ CAMINHO TRISTE (NEGATIVE / EDGE CASES)</div>
+                    <p class="text-slate-300 leading-relaxed">• Tentativa de login com senha incorreta — exibição e validação de alerta de erro.</p>
+                    <p class="text-slate-300 leading-relaxed">• Tentativa de acesso direto a rotas protegidas sem token de sessão ativo.</p>
+                    <p class="text-slate-300 leading-relaxed">• Limpeza e exclusão de massa de dados após a suíte para manter a idempotência dos testes.</p>
                 </div>
             </div>
 
-            <!-- Indicadores da galeria -->
-            <div id="gallery-dots" class="hidden flex justify-center items-center gap-2.5 mt-4"></div>
-        </section>
+            {/* Conteúdo da Aba Terminal */}
+            <div id="tab-content-terminal" class="hidden space-y-4">
+                <div class="bg-slate-950 p-5 rounded-xl border border-cyan-500/30 text-xs font-mono text-cyan-300 relative group">
+                    <div class="flex items-center justify-between text-slate-500 border-b border-slate-800 pb-2 mb-3">
+                        <span>bash — cypress runner command</span>
+                        <button onclick="copyTerminalCmd()" class="hover:text-cyan-400 transition-colors">Copiar</button>
+                    </div>
+                    <code id="terminal-cmd-text" class="block text-slate-200">
+                        npx cypress run --spec "cypress/e2e/**/*.cy.js" --browser chrome --headed
+                    </code>
+                </div>
+            </div>
 
-        <!-- Tecnologias -->
-        <section id="tech-stack-bar" class="hidden mb-10 md:mb-12">
-            <h2 class="text-[10px] font-bold text-cyan-400 uppercase tracking-widest mb-4 flex items-center gap-2">
-                <span class="h-px w-6 bg-cyan-500/40"></span>
-                Tecnologias utilizadas
-            </h2>
-            <div id="tech-stack-grid" class="tech-scroll flex gap-3 overflow-x-auto snap-x snap-mandatory lg:grid lg:grid-cols-4 lg:gap-3 lg:overflow-visible"></div>
-        </section>
-
-        <!-- Sobre o projeto -->
-        <section class="bg-[#0C1222]/40 border border-slate-900/60 rounded-2xl p-5 md:p-8">
-            <h2 class="text-[10px] font-bold text-cyan-400 uppercase tracking-widest mb-5 flex items-center gap-2">
-                <span class="h-px w-6 bg-cyan-500/40"></span>
-                Sobre o projeto
-            </h2>
-            <div id="project-desc-container" class="space-y-4 text-slate-300 text-sm md:text-base leading-relaxed"></div>
         </section>
     </main>
 
+    <!-- Script de Inicialização 3D e Dados -->
     <script>
-        const devIcon = (folder, file = 'original') =>
-            `<img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/${folder}/${folder}-${file}.svg" class="w-5 h-5 object-contain" alt="" loading="lazy" />`;
+        // 1. Init Three.js Background
+        function init3D() {
+            const canvas = document.getElementById('bg-3d');
+            if (!canvas || !window.THREE) return;
 
-        const BRAND_ICONS = {
-            cypress: devIcon('cypressio'),
-            javascript: devIcon('javascript'),
-            nodejs: devIcon('nodejs'),
-            selenium: devIcon('selenium'),
-            python: devIcon('python'),
-            react: devIcon('react'),
-            php: devIcon('php'),
-            mysql: devIcon('mysql'),
-            html5: devIcon('html5'),
-            discord: '<svg class="w-5 h-5 text-indigo-300" viewBox="0 0 640 512" fill="currentColor"><path d="M524.531 69.836a1.5 1.5 0 0 0-.764-.7A485.065 485.065 0 0 0 404.081 32.03a1.816 1.816 0 0 0-1.923.91 337.461 337.461 0 0 0-14.9 30.6 447.848 447.848 0 0 0-134.426 0 309.541 309.541 0 0 0-15.135-30.6 1.89 1.89 0 0 0-1.924-.91A483.689 483.689 0 0 0 116.085 69.137a1.712 1.712 0 0 0-.788.676C39.068 183.651 18.186 294.69 28.43 404.354a2.016 2.016 0 0 0 .765 1.375A487.666 487.666 0 0 0 176.02 479.918a1.9 1.9 0 0 0 2.063-.276c8.3-11.39 15.3-23.32 21.573-35.6a1.88 1.88 0 0 0-1.025-2.61c-19.145-7.25-37.456-16.14-55.01-26.33a1.86 1.86 0 0 1-.137-3.13c4.13-3.11 8.21-6.3 12.16-9.59a1.87 1.87 0 0 1 1.95-.29c83.1 37.81 173.23 37.81 255.45 0a1.87 1.87 0 0 1 1.95.29c3.95 3.29 8.03 6.48 12.16 9.59a1.85 1.85 0 0 1-.14 3.13c-17.55 10.2-35.86 19.08-55.01 26.33a1.88 1.88 0 0 0-1.025 2.61c6.27 12.28 13.27 24.21 21.57 35.6a1.9 1.9 0 0 0 2.06.276A487.666 487.666 0 0 0 611.534 405.729a2.016 2.016 0 0 0 .765-1.375C624.4 281.341 598.665 172.3 524.531 69.836z"/></svg>',
-            e2e: '<svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 17h16"/><path stroke-linecap="round" stroke-linejoin="round" d="M7 11h10"/><path stroke-linecap="round" stroke-linejoin="round" d="M10 7h4"/></svg>',
-            assertions: '<svg class="w-5 h-5 text-teal-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m9 12 2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>',
-            relatorio: '<svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path stroke-linecap="round" stroke-linejoin="round" d="m9 15 2 2 4-4"/></svg>',
-            orangehrm: '<img src="https://opensource-demo.orangehrmlive.com/web/dist/img/ohrm_logo.png" class="w-5 h-5 object-contain" alt="OrangeHRM" loading="lazy" />',
-        };
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
 
-        const TECH_STACKS = {
-            ecommerce: [
-                { name: 'HTML5', color: 'border-orange-500/40 bg-orange-500/10', icon: BRAND_ICONS.html5 },
-                { name: 'React', color: 'border-cyan-400/40 bg-cyan-400/10', icon: BRAND_ICONS.react },
-                { name: 'PHP', color: 'border-indigo-400/40 bg-indigo-400/10', icon: BRAND_ICONS.php },
-                { name: 'MySQL', color: 'border-blue-400/40 bg-blue-400/10', icon: BRAND_ICONS.mysql },
-            ],
-            bot: [
-                { name: 'Python', color: 'border-[#FFD43B]/40 bg-[#3776AB]/20', icon: BRAND_ICONS.python },
-                { name: 'Selenium', color: 'border-[#43B02A]/50 bg-[#43B02A]/15', icon: BRAND_ICONS.selenium },
-                { name: 'MySQL', color: 'border-blue-400/40 bg-blue-400/10', icon: BRAND_ICONS.mysql },
-                { name: 'Discord', color: 'border-indigo-400/40 bg-indigo-500/15', icon: BRAND_ICONS.discord },
-            ],
-            qa: [
-                { name: 'Python', color: 'border-[#FFD43B]/40 bg-[#3776AB]/20', icon: BRAND_ICONS.python },
-                { name: 'Selenium', color: 'border-[#43B02A]/50 bg-[#43B02A]/15', icon: BRAND_ICONS.selenium },
-                { name: 'Relatório', color: 'border-amber-400/40 bg-amber-500/10', icon: BRAND_ICONS.relatorio },
-            ],
-            cypress: [
-                { name: 'Cypress', color: 'border-emerald-400/40 bg-emerald-500/15', icon: BRAND_ICONS.cypress },
-                { name: 'JavaScript', color: 'border-yellow-400/40 bg-yellow-500/10', icon: BRAND_ICONS.javascript },
-                { name: 'E2E', color: 'border-cyan-400/40 bg-cyan-400/10', icon: BRAND_ICONS.e2e },
-                { name: 'Assertions', color: 'border-teal-400/40 bg-teal-500/10', icon: BRAND_ICONS.assertions },
-            ],
-        };
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-        function getProjectType(titulo) {
-            const t = titulo.toLowerCase();
-            if (t.includes('e-commerce') || t.includes('ecommerce')) return 'ecommerce';
-            if (t.includes('linkedin') || t.includes('assistente')) return 'bot';
-            if (t.includes('cypress')) return 'cypress';
-            if (t.includes('automação') || t.includes('automacao') || t.includes('garantia') || t.includes('qa')) return 'qa';
-            return null;
-        }
+            const count = 250;
+            const geometry = new THREE.BufferGeometry();
+            const positions = new Float32Array(count * 3);
 
-        const TECH_BY_NAME = {};
-        Object.values(TECH_STACKS).flat().forEach(item => { TECH_BY_NAME[item.name.toLowerCase()] = item; });
-        TECH_BY_NAME['relatório .txt'] = TECH_BY_NAME['relatório'] = TECH_STACKS.qa[2];
-        TECH_BY_NAME['html'] = TECH_STACKS.ecommerce[0];
-        TECH_BY_NAME['cypress'] = { name: 'Cypress', color: 'border-emerald-400/40 bg-emerald-500/15', icon: BRAND_ICONS.cypress };
-        TECH_BY_NAME['javascript'] = { name: 'JavaScript', color: 'border-yellow-400/40 bg-yellow-500/10', icon: BRAND_ICONS.javascript };
-        TECH_BY_NAME['node.js'] = { name: 'Node.js', color: 'border-green-400/40 bg-green-500/10', icon: BRAND_ICONS.nodejs };
-        TECH_BY_NAME['e2e'] = { name: 'E2E', color: 'border-cyan-400/40 bg-cyan-400/10', icon: BRAND_ICONS.e2e };
-        TECH_BY_NAME['orangehrm'] = { name: 'OrangeHRM', color: 'border-orange-400/40 bg-orange-500/10', icon: BRAND_ICONS.orangehrm };
-        TECH_BY_NAME['selenium'] = { name: 'Selenium', color: 'border-[#43B02A]/50 bg-[#43B02A]/15', icon: BRAND_ICONS.selenium };
-        TECH_BY_NAME['python'] = { name: 'Python', color: 'border-[#FFD43B]/40 bg-[#3776AB]/20', icon: BRAND_ICONS.python };
-        TECH_BY_NAME['react'] = { name: 'React', color: 'border-cyan-400/40 bg-cyan-400/10', icon: BRAND_ICONS.react };
-        TECH_BY_NAME['php'] = { name: 'PHP', color: 'border-indigo-400/40 bg-indigo-400/10', icon: BRAND_ICONS.php };
-        TECH_BY_NAME['mysql'] = { name: 'MySQL', color: 'border-blue-400/40 bg-blue-400/10', icon: BRAND_ICONS.mysql };
-
-        function renderTechFromTags(tags) {
-            if (!tags || !tags.length) return false;
-            const items = tags.map(tag => {
-                const key = tag.toLowerCase().replace(/\s*\.txt\s*/i, '').trim();
-                const found = TECH_BY_NAME[key] || TECH_BY_NAME[tag.toLowerCase()];
-                if (found) return { ...found, name: tag };
-                return {
-                    name: tag,
-                    color: 'border-cyan-400/30 bg-cyan-400/10',
-                    icon: '<span class="text-xs font-bold text-cyan-300">' + tag.slice(0, 2) + '</span>'
-                };
-            });
-            const bar = document.getElementById('tech-stack-bar');
-            const grid = document.getElementById('tech-stack-grid');
-            const cols = items.length <= 3 ? 'lg:grid-cols-3' : 'lg:grid-cols-4';
-            grid.className = `tech-scroll flex gap-3 overflow-x-auto snap-x snap-mandatory lg:grid ${cols} lg:gap-3 lg:overflow-visible`;
-            bar.classList.remove('hidden');
-            grid.innerHTML = items.map(item => `
-                <div class="tech-card snap-center" title="${item.name}">
-                    <div class="tech-card-icon ${item.color}">${item.icon}</div>
-                    <span class="text-[10px] font-semibold text-slate-300 text-center leading-tight">${item.name}</span>
-                </div>
-            `).join('');
-            return true;
-        }
-
-        function renderTechStack(type) {
-            const items = TECH_STACKS[type];
-            if (!items) return;
-            const bar = document.getElementById('tech-stack-bar');
-            const grid = document.getElementById('tech-stack-grid');
-            const cols = items.length === 3 ? 'lg:grid-cols-3' : 'lg:grid-cols-4';
-            grid.className = `tech-scroll flex gap-3 overflow-x-auto snap-x snap-mandatory lg:grid ${cols} lg:gap-3 lg:overflow-visible`;
-            bar.classList.remove('hidden');
-            grid.innerHTML = items.map(item => `
-                <div class="tech-card snap-center" title="${item.name}">
-                    <div class="tech-card-icon ${item.color}">${item.icon}</div>
-                    <span class="text-[10px] font-semibold text-slate-300 text-center leading-tight">${item.name}</span>
-                </div>
-            `).join('');
-        }
-
-        function renderBadges(type, category) {
-            if (category) {
-                const isQa = /qa|qualidade|automação|automacao/i.test(category);
-                const cls = isQa
-                    ? 'bg-cyan-950/40 text-cyan-400 border-cyan-500/30'
-                    : 'bg-cyan-950/40 text-cyan-400 border-cyan-500/30';
-                document.getElementById('project-badges').innerHTML =
-                    `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${cls}">${category}</span>`;
-                return;
+            for (let i = 0; i < count * 3; i += 3) {
+                positions[i] = (Math.random() - 0.5) * 30;
+                positions[i + 1] = (Math.random() - 0.5) * 30;
+                positions[i + 2] = (Math.random() - 0.5) * 30;
             }
-            const badges = {
-                qa: [{ text: 'QA & Automação', class: 'bg-cyan-950/40 text-cyan-400 border-cyan-500/30' }],
-                ecommerce: [{ text: 'Full Stack', class: 'bg-cyan-950/40 text-cyan-400 border-cyan-500/30' }],
-                bot: [{ text: 'Automação', class: 'bg-green-950/40 text-green-400 border-green-500/30' }],
-                cypress: [{ text: 'QA & Automação', class: 'bg-cyan-950/40 text-cyan-400 border-cyan-500/30' }],
+
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            const material = new THREE.PointsMaterial({ size: 0.12, color: 0x00f2ff, transparent: true, opacity: 0.6 });
+            const particles = new THREE.Points(geometry, material);
+            scene.add(particles);
+
+            camera.position.z = 10;
+
+            const animate = () => {
+                requestAnimationFrame(animate);
+                particles.rotation.y += 0.0006;
+                particles.rotation.x += 0.0003;
+                renderer.render(scene, camera);
             };
-            const list = badges[type] || [{ text: 'Projeto', class: 'bg-cyan-950/40 text-cyan-400 border-cyan-500/30' }];
-            document.getElementById('project-badges').innerHTML = list.map(b =>
-                `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${b.class}">${b.text}</span>`
-            ).join('');
-        }
+            animate();
 
-        function renderDescription(text) {
-            document.getElementById('project-desc-container').innerHTML = text
-                .split(/\n\n+/).filter(Boolean)
-                .map(p => `<p>${p.trim()}</p>`).join('');
-        }
-
-        function formatTime(seconds) {
-            if (!isFinite(seconds) || seconds < 0) return '0:00';
-            const m = Math.floor(seconds / 60);
-            const s = Math.floor(seconds % 60);
-            return `${m}:${String(s).padStart(2, '0')}`;
-        }
-
-        function getMediaKind(url) {
-            if (url.match(/\.(mp4|webm|ogg|mov)([?#].*)?$/i)) return 'video';
-            if (url.match(/(youtube\.com\/watch\?.*v=|youtu\.be\/)([^&]+)/i)) return 'youtube';
-            if (url.match(/vimeo\.com\/(?:video\/)?(\d+)/i)) return 'vimeo';
-            return 'image';
-        }
-
-        function setTheaterMeta(kind, projectType, index, total) {
-            const badge = document.getElementById('theater-badge');
-            const url = document.getElementById('theater-url');
-            const hint = document.getElementById('controls-hint');
-            const urls = {
-                ecommerce: 'http://localhost:3000/dantastec-demo',
-                qa: 'demo://automation/python-selenium',
-                cypress: 'demo://cypress/e2e-suite',
-            };
-            url.textContent = urls[projectType] || 'demo://portfolio/projeto';
-
-            if (kind === 'video') {
-                badge.textContent = 'Vídeo demo';
-                hint.textContent = 'Demonstração prática em vídeo';
-            } else if (kind === 'youtube' || kind === 'vimeo') {
-                badge.textContent = kind === 'vimeo' ? 'Vimeo' : 'YouTube';
-                hint.textContent = 'Player externo — use os controles do vídeo';
-            } else if (total > 1) {
-                badge.textContent = `Galeria ${index + 1}/${total}`;
-                hint.textContent = 'Navegue pelas capturas do projeto';
-            } else {
-                badge.textContent = 'Preview';
-                hint.textContent = 'Visualização do projeto';
-            }
-        }
-
-        function updateGalleryDots(total, active) {
-            const wrap = document.getElementById('gallery-dots');
-            if (total <= 1) {
-                wrap.classList.add('hidden');
-                wrap.innerHTML = '';
-                return;
-            }
-            wrap.classList.remove('hidden');
-            wrap.innerHTML = Array.from({ length: total }, (_, i) => `
-                <button type="button" onclick="renderMedia(${i})" aria-label="Imagem ${i + 1}"
-                    class="h-2.5 rounded-full transition-all ${i === active ? 'bg-cyan-400 w-8 shadow-[0_0_10px_rgba(34,211,238,0.6)]' : 'bg-slate-600 w-2.5 hover:bg-slate-400'}"></button>
-            `).join('');
-        }
-
-        function setGalleryNavigation(index, total) {
-            const show = total > 1;
-            const goPrev = () => renderMedia((index - 1 + total) % total);
-            const goNext = () => renderMedia((index + 1) % total);
-
-            ['btn-prev', 'btn-next', 'overlay-prev', 'overlay-next'].forEach((id, i) => {
-                const el = document.getElementById(id);
-                el.classList.toggle('hidden', !show);
-                el.onclick = i % 2 === 0 ? goPrev : goNext;
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
             });
         }
+        init3D();
 
-        function hideGalleryNavigation() {
-            ['btn-prev', 'btn-next', 'overlay-prev', 'overlay-next'].forEach(id => {
-                document.getElementById(id).classList.add('hidden');
-            });
-        }
+        // 2. Dados Hardcoded de Reserva caso localStorage esteja limpo
+        const HARDCODED_PROJECTS = [
+            {
+                id: 0,
+                titulo: "E-commerce: Plataforma Completa",
+                category: "Full Stack",
+                excerpt: "Loja online moderna com vitrine para o cliente e painel administrativo para o lojista.",
+                descricao: "Este projeto é uma solução completa para quem deseja vender pela internet, unindo uma loja visualmente atraente para o cliente a um painel de controle potente para o lojista.\n\nPara o Cliente: Desenvolvi uma vitrine moderna e organizada por categorias (como moda masculina, feminina e eletrônicos), facilitando a busca por produtos e proporcionando uma navegação fluida e intuitiva.\n\nPara o Lojista: Criei um painel administrativo onde é possível gerenciar todo o negócio em um só lugar. É possível cadastrar produtos com fotos e descrições detalhadas, controlar o estoque em tempo real, organizar categorias e acompanhar o desempenho das vendas de forma simples e rápida.",
+                midia: ["https://rubot-files.softcom.services/ShareX/2026/04/09.04.2026_21.46.50_REC.mp4"],
+                tags: ["React", "HTML", "PHP", "MySQL"]
+            },
+            {
+                id: 1,
+                titulo: "Automação QA: Validação de Garantia",
+                category: "QA",
+                excerpt: "Automação em Python/Selenium para cadastro e validação de garantia com relatório .txt automático.",
+                descricao: "Projeto focado em Quality Assurance e automação de testes, demonstrando minha evolução prática em qualidade de software.\n\nDesenvolvi uma automação com Python e Selenium que realiza o cadastro de um item de forma automática, validando a garantia do produto e trazendo mais segurança ao processo — reduzindo falhas manuais e aumentando a confiabilidade dos cenários testados.\n\nApós cada execução, o fluxo gera automaticamente um relatório em arquivo .txt com todo o progresso e o resultado da automação, além de screenshots de evidência em caso de sucesso ou falha.\n\nO código-fonte e o README com detalhes do fluxo estão disponíveis no repositório GitHub.",
+                midia: ["https://vimeo.com/1196499631"],
+                tags: ["Python", "Selenium", "Relatório .txt"],
+                repoUrl: "https://github.com/JonathaITZ/QA_testeautomatizado"
+            },
+            {
+                id: 2,
+                titulo: "Testes E2E com Cypress: Login e Carrinho",
+                category: "QA",
+                excerpt: "Suíte E2E automatizada no Sauce Demo cobrindo login (caminho feliz/triste) e fluxo de carrinho.",
+                descricao: "Projeto de estudos em Quality Assurance com Cypress 15.x para testes automatizados de front-end web. Montei minha primeira suíte E2E no site de prática Sauce Demo (Swag Labs), cobrindo cenários reais de uso.\n\nO que aprendi e apliquei:\n• Sintaxe básica do Cypress (cy.visit, cy.get, cy.type, cy.click, cy.should)\n• Criação de cenários com describe/it — caminho feliz e caminho triste\n• Localização de elementos por seletores CSS e data-test\n• Execução via interface gráfica (cypress:open) e linha de comando (cypress:run)\n\nTestes implementados:\n• login.cy.js — login com sucesso e login inválido\n• carrinho.cy.js — adicionar item ao carrinho e validar produto na sacola\n\nO código-fonte, README com instruções de execução (npm install, npx cypress install) e a estrutura completa do projeto estão no repositório GitHub.\n\nPróximos passos: comandos customizados, mais cenários e integração com CI/CD.",
+                midia: [
+                    "assets/cypress/login-runner.png",
+                    "assets/cypress/login-codigo.png",
+                    "assets/cypress/carrinho-runner.png",
+                    "assets/cypress/carrinho-codigo.png"
+                ],
+                tags: ["Cypress", "JavaScript", "Node.js", "E2E"],
+                repoUrl: "https://github.com/JonathaITZ/testes-automatizados-cypress"
+            },
+            {
+                id: 3,
+                titulo: "Testes E2E com Cypress: OrangeHRM",
+                category: "QA",
+                excerpt: "Fluxo ponta a ponta no OrangeHRM: autenticação, cadastro no módulo PIM e limpeza de dados.",
+                descricao: "Projeto de estudos com Cypress no site demo do OrangeHRM — ambiente aberto para praticar automação de testes no front-end.\n\nFluxo automatizado ponta a ponta:\n• Login no sistema com credenciais válidas (Admin / admin123)\n• Cadastro de novo funcionário no módulo PIM / Personal Details\n• Exclusão do registro ao final do teste — limpeza dos dados para não deixar resíduos no ambiente de demonstração\n\nO que esse cenário reforça na prática:\n• Automação economiza tempo e garante consistência do fluxo sem execução manual repetitiva\n• Navegação entre módulos após autenticação\n• Preenchimento de formulários e validação de ações CRUD completas\n• Execução via interface gráfica (npm run cy:open) ou linha de comando (npm run cy:run)\n\nO README no GitHub traz o passo a passo completo para clonar, instalar dependências e rodar os testes localmente.",
+                midia: ["https://rubot-files.softcom.services/ShareX/2026/06/11111111111111111.mp4"],
+                tags: ["Cypress", "JavaScript", "Node.js", "E2E", "OrangeHRM"],
+                repoUrl: "https://github.com/JonathaITZ/cenario-de-teste-2"
+            },
+            {
+                id: 4,
+                titulo: "Testes E2E com Cypress: Login, Segurança e PIM",
+                category: "QA",
+                excerpt: "Suíte completa no OrangeHRM validando segurança, erros de login, rotas protegidas e cadastro PIM.",
+                descricao: "Projeto de estudos em Quality Assurance com Cypress para automação de testes no front-end web, utilizando o site demo OrangeHRM.\n\nA suíte cobre cenários reais de uso e validação de segurança, indo além do caminho feliz:\n• Login válido — autenticação com credenciais corretas e validação do acesso ao Dashboard\n• Login inválido — tentativa com senha incorreta e validação da mensagem de erro (Invalid credentials)\n• Proteção de rota — acesso direto à homepage via URL sem autenticação, confirmando redirecionamento para o login\n• PIM / Personal Details — cadastro de funcionário, salvamento dos dados e exclusão ao final do teste para manter o ambiente limpo\n\nO que apliquei:\n• Comandos Cypress: cy.visit, cy.get, cy.type, cy.click, cy.url, cy.contains, cy.should\n• Estrutura de testes com describe e it\n• Validações de URL, mensagens de erro e elementos visíveis na tela\n• Organização em arquivos separados por fluxo\n• Execução via interface gráfica (cy:open) e linha de comando (cy:run)\n\nO código-fonte e o README com instruções de execução estão disponíveis no repositório GitHub.",
+                midia: ["https://vimeo.com/1203525130"],
+                tags: ["Cypress", "JavaScript", "Node.js", "E2E", "OrangeHRM"],
+                repoUrl: "https://github.com/JonathaITZ/cenario-de-teste-2"
+            }
+        ];
 
-        function bindVideoControls(video) {
-            const btnPlay = document.getElementById('btn-play');
-            const iconPlay = document.getElementById('icon-play');
-            const iconPause = document.getElementById('icon-pause');
-            const timeDisplay = document.getElementById('time-display');
-            const progressWrap = document.getElementById('progress-wrap');
-            const progressFill = document.getElementById('progress-fill');
+        // Carrega Projeto da URL ou localStorage
+        const params = new URLSearchParams(window.location.search);
+        const projectId = params.get('id');
+        let projectData = null;
 
-            btnPlay.classList.remove('hidden');
-            progressWrap.classList.remove('hidden');
-
-            const syncTime = () => {
-                timeDisplay.textContent = `${formatTime(video.currentTime)} / ${formatTime(video.duration)}`;
-                if (video.duration) {
-                    progressFill.style.width = `${(video.currentTime / video.duration) * 100}%`;
-                }
-            };
-
-            const syncPlayState = () => {
-                const playing = !video.paused;
-                iconPlay.classList.toggle('hidden', playing);
-                iconPause.classList.toggle('hidden', !playing);
-            };
-
-            btnPlay.onclick = () => {
-                if (video.paused) video.play();
-                else video.pause();
-            };
-
-            progressWrap.onclick = (e) => {
-                if (!video.duration) return;
-                const rect = progressWrap.getBoundingClientRect();
-                const ratio = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
-                video.currentTime = ratio * video.duration;
-            };
-
-            video.addEventListener('timeupdate', syncTime);
-            video.addEventListener('loadedmetadata', syncTime);
-            video.addEventListener('play', syncPlayState);
-            video.addEventListener('pause', syncPlayState);
-            syncPlayState();
-            syncTime();
-        }
-
-        function resetControlsForEmbed() {
-            document.getElementById('btn-play').classList.add('hidden');
-            document.getElementById('progress-wrap').classList.add('hidden');
-            document.getElementById('time-display').textContent = '— / —';
-        }
-
-        function resetControlsForGallery(index, total) {
-            document.getElementById('btn-play').classList.add('hidden');
-            document.getElementById('progress-wrap').classList.add('hidden');
-            document.getElementById('time-display').textContent = `Foto ${index + 1} de ${total}`;
-            document.getElementById('time-display').className = 'text-cyan-300/90 font-bold whitespace-nowrap';
-            setGalleryNavigation(index, total);
-        }
-
-        const projetoString = localStorage.getItem('projetoAtual');
-        if (!projetoString) {
-            window.location.href = 'index.html';
+        if (projectId !== null && HARDCODED_PROJECTS[projectId]) {
+            projectData = HARDCODED_PROJECTS[projectId];
         } else {
-            const projeto = JSON.parse(projetoString);
-            const projectType = getProjectType(projeto.titulo);
-            const midiaList = Array.isArray(projeto.midia) ? projeto.midia : [projeto.midia];
-            window.currentMediaIndex = 0;
-
-            document.title = `${projeto.titulo} | Dantas`;
-            document.getElementById('project-title').textContent = projeto.titulo;
-
-            const subtitles = {
-                qa: 'Automação com Python e Selenium + relatório .txt da execução.',
-                cypress: 'Testes E2E de login e carrinho no Sauce Demo com Cypress.',
-                ecommerce: 'Loja online premium com vitrine para o cliente e painel administrativo integrado.',
-                bot: 'Bot com integrações automatizadas.',
-            };
-            const subtitleEl = document.getElementById('project-subtitle');
-            const subtitleText = projeto.excerpt || subtitles[projectType] || '';
-            subtitleEl.textContent = subtitleText;
-            subtitleEl.classList.toggle('hidden', !subtitleText);
-
-            if (projeto.repoUrl) {
-                const repoEl = document.getElementById('project-repo-link');
-                repoEl.classList.remove('hidden');
-                repoEl.innerHTML = `<a href="${projeto.repoUrl}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-400/50 text-cyan-400 hover:bg-cyan-400 hover:text-slate-900 transition-all text-sm font-bold tracking-wide">
-                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
-                    Ver repositório no GitHub
-                </a>`;
-            }
-
-            renderBadges(projectType, projeto.category);
-            if (!renderTechFromTags(projeto.tags)) renderTechStack(projectType);
-            renderDescription(projeto.descricao);
-
-            document.getElementById('btn-fullscreen').onclick = () => {
-                const el = document.getElementById('theater-viewport');
-                if (document.fullscreenElement) document.exitFullscreen();
-                else if (el.requestFullscreen) el.requestFullscreen();
-            };
-
-            window.renderMedia = function(index) {
-                window.currentMediaIndex = index;
-                const box = document.getElementById('project-media-container');
-                const url = (midiaList[index] || '').trim();
-                const kind = getMediaKind(url);
-                let html = '';
-
-                setTheaterMeta(kind, projectType, index, midiaList.length);
-                updateGalleryDots(midiaList.length, index);
-
-                if (kind === 'video') {
-                    html = `<video id="project-video" src="${url}" playsinline preload="metadata"></video>`;
-                } else if (kind === 'youtube') {
-                    const id = url.match(/(youtube\.com\/watch\?.*v=|youtu\.be\/)([^&]+)/i)[2];
-                    html = `<iframe src="https://www.youtube.com/embed/${id}" allowfullscreen loading="lazy"></iframe>`;
-                } else if (kind === 'vimeo') {
-                    const id = url.match(/vimeo\.com\/(?:video\/)?(\d+)/i)[1];
-                    html = `<iframe src="https://player.vimeo.com/video/${id}?title=0&byline=0&portrait=0" allowfullscreen loading="lazy"></iframe>`;
-                } else {
-                    html = `<img src="${url}" alt="${projeto.titulo}" onerror="this.src='https://placehold.co/1280x720/0a0f1c/22d3ee?text=Sem+midia'">`;
-                }
-
-                box.innerHTML = html;
-
-                if (kind === 'video') {
-                    const video = document.getElementById('project-video');
-                    bindVideoControls(video);
-                    hideGalleryNavigation();
-                    document.getElementById('time-display').className = 'text-slate-500 whitespace-nowrap';
-                } else if (kind === 'youtube' || kind === 'vimeo') {
-                    resetControlsForEmbed();
-                    hideGalleryNavigation();
-                    document.getElementById('time-display').className = 'text-slate-500 whitespace-nowrap';
-                } else {
-                    resetControlsForGallery(index, midiaList.length);
-                }
-            };
-
-            renderMedia(0);
-
-            requestAnimationFrame(() => {
-                document.getElementById('main-content').classList.remove('opacity-0');
-            });
+            const stored = localStorage.getItem('projetoAtual');
+            if (stored) projectData = JSON.parse(stored);
         }
+
+        if (!projectData) projectData = HARDCODED_PROJECTS[0];
+
+        // Preenche Interface
+        document.title = `${projectData.titulo || projectData.title} | QA Portfolio`;
+        document.getElementById('project-title').textContent = projectData.titulo || projectData.title;
+        document.getElementById('project-subtitle').textContent = projectData.excerpt || '';
+
+        // Repo Link
+        if (projectData.repoUrl) {
+            document.getElementById('project-repo-link').innerHTML = `
+                <a href="${projectData.repoUrl}" target="_blank" rel="noopener noreferrer" 
+                   className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-cyan-950/60 border border-cyan-400/40 text-cyan-300 font-mono text-xs font-bold hover:bg-cyan-400 hover:text-slate-950 transition-all">
+                    ↗ Acessar Código no GitHub
+                </a>`;
+        }
+
+        // Descrição
+        document.getElementById('project-desc-container').innerHTML = (projectData.descricao || projectData.description || '')
+            .split('\n\n').map(p => `<p class="leading-relaxed">${p}</p>`).join('');
+
+        // Tags Stack Grid
+        const tags = projectData.tags || [];
+        document.getElementById('tech-stack-grid').innerHTML = tags.map(t => `
+            <div class="px-3.5 py-2 rounded-xl bg-slate-950 border border-cyan-500/30 text-cyan-300 text-xs font-mono font-bold">
+                #${t}
+            </div>
+        `).join('');
+
+        // Renderização de Mídia
+        const mediaList = Array.isArray(projectData.midia || projectData.media) 
+            ? (projectData.midia || projectData.media) 
+            : [projectData.midia || projectData.media];
+
+        function renderMedia(idx) {
+            const container = document.getElementById('project-media-container');
+            const url = (mediaList[idx] || '').trim();
+
+            if (url.match(/\.(mp4|webm|mov)$/i)) {
+                container.innerHTML = `<video src="${url}" controls autoplay loop class="w-full h-full object-contain"></video>`;
+            } else if (url.includes('youtube.com') || url.includes('youtu.be')) {
+                const id = url.match(/(youtube\.com\/watch\?.*v=|youtu\.be\/)([^&]+)/i)[2];
+                container.innerHTML = `<iframe src="https://www.youtube.com/embed/${id}" class="w-full h-full" allowfullscreen></iframe>`;
+            } else if (url.includes('vimeo.com')) {
+                const id = url.match(/vimeo\.com\/(?:video\/)?(\d+)/i)[1];
+                container.innerHTML = `<iframe src="https://player.vimeo.com/video/${id}" class="w-full h-full" allowfullscreen></iframe>`;
+            } else {
+                container.innerHTML = `<img src="${url}" alt="Preview" class="w-full h-full object-contain" onError="this.src='https://placehold.co/1280x720/0a0f1c/00f2ff?text=Preview+Indisponivel'" />`;
+            }
+        }
+        renderMedia(0);
+
+        // Abas Interativas
+        window.switchTab = function(tabName) {
+            ['overview', 'scenarios', 'terminal'].forEach(t => {
+                const btn = document.getElementById(`tab-btn-${t}`);
+                const content = document.getElementById(`tab-content-${t}`);
+                if (t === tabName) {
+                    btn.className = "px-4 py-2 rounded-xl text-xs font-mono font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-400/50";
+                    content.classList.remove('hidden');
+                } else {
+                    btn.className = "px-4 py-2 rounded-xl text-xs font-mono text-slate-400 hover:text-white bg-slate-900/60 border border-slate-800";
+                    content.classList.add('hidden');
+                }
+            });
+        };
+
+        window.copyTerminalCmd = function() {
+            const text = document.getElementById('terminal-cmd-text').innerText;
+            navigator.clipboard.writeText(text);
+            alert('Comando copiado para a área de transferência!');
+        };
+
+        document.getElementById('main-content').classList.remove('opacity-0');
     </script>
 </body>
 </html>

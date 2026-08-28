@@ -1,1107 +1,602 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jonatha Dantas | Portfólio QA</title>
-    <meta name="description" content="Portfólio de Jonatha Dantas — Quality Assurance, automação de testes e projetos em Python/Selenium.">
+    <title>Jonatha Dantas | QA Engineer & Automation Spec</title>
+    <meta name="description" content="Portfólio de Jonatha Dantas — Quality Assurance, automação de testes com Cypress, Selenium, Python e testes de API.">
     
-    <!-- Importando o Tailwind CSS via CDN -->
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Configuração do Tailwind para o Dark Mode -->
     <script>
         tailwind.config = {
-            darkMode: 'class', // Permite alternar o tema via JavaScript
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
         }
     </script>
 
-    <!-- Bibliotecas do React e ReactDOM (CDN) -->
+    <!-- React 18, Framer Motion, Three.js & Babel -->
     <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
-    
-    <!-- Framer Motion para animações -->
     <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
-
-    <!-- Babel para transpilar JSX no navegador (versão fixa + runtime clássico) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone@7.24.7/babel.min.js"></script>
-</head>
-<body class="bg-[#030712] text-white font-sans min-h-screen overflow-x-hidden selection:bg-cyan-400 selection:text-slate-900">
 
-    <!-- O React irá injetar todo o Dashboard aqui dentro -->
-    <div id="root"></div>
-    
-    <!-- Código React embutido para evitar o bloqueio de segurança (CORS) da tela branca -->
+    <style>
+        body {
+            background-color: #060913;
+            color: #e2e8f0;
+            overflow-x: hidden;
+        }
+
+        .card-clean {
+            background: #0b0f19;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            transition: all 0.25s ease;
+        }
+
+        .card-clean:hover {
+            border-color: rgba(34, 211, 238, 0.3);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #060913;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body class="selection:bg-cyan-500 selection:text-slate-950 font-sans relative min-h-screen">
+
+    <!-- Three.js Background (Planeta 3D com Zoom no Scroll) -->
+    <canvas id="bg-3d" class="fixed inset-0 pointer-events-none z-0 opacity-40"></canvas>
+
+    <div id="root" class="relative z-10"></div>
+
     <script type="text/babel" data-presets="react">
       /** @jsx React.createElement */
-      const { useState, useEffect, useRef } = React;
-      const { motion, AnimatePresence } = window.Motion || window.FramerMotion;
+      const { useState, useEffect } = React;
 
-      // Componente ProfileCard com as animações de Hover e tema Cyberpunk/Dashboard
-      function ProfileCard({ profileImage, isDevMode, onProfileClick }) {
-        const [isHovered, setIsHovered] = useState(false);
-        const [isMobile, setIsMobile] = useState(false);
-        const bannerImg = "https://i.ibb.co/WW8mM97g/e32fe65b-639e-46ad-98a4-41eeed5bf1e5.jpg";
+      // Ícones SVG Sociais
+      const Icons = {
+        Github: () => (
+          <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+            <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+          </svg>
+        ),
+        Linkedin: () => (
+          <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+            <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.25V10.9H6.46M7.86 6.6a1.4 1.4 0 1 0 1.4 1.4 1.4 1.4 0 0 0-1.4-1.4z"/>
+          </svg>
+        ),
+        Whatsapp: () => (
+          <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+            <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+          </svg>
+        )
+      };
 
-        // Detecta o tamanho da tela para adaptar a animação
+      // =========================================================================
+      // THREE.JS BACKGROUND
+      // =========================================================================
+      function ThreeBackground() {
         useEffect(() => {
-          const handleResize = () => setIsMobile(window.innerWidth < 640); // 640px = breakpoint sm no Tailwind
-          handleResize();
+          const canvas = document.getElementById('bg-3d');
+          if (!canvas || !window.THREE) return;
+
+          const scene = new THREE.Scene();
+          const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+          const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+
+          renderer.setSize(window.innerWidth, window.innerHeight);
+          renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+          const planetGroup = new THREE.Group();
+
+          // 1. Esfera do Planeta
+          const sphereGeo = new THREE.SphereGeometry(3.8, 40, 40);
+          const wireframeGeo = new THREE.WireframeGeometry(sphereGeo);
+          const sphereMat = new THREE.LineBasicMaterial({
+            color: 0x38bdf8,
+            transparent: true,
+            opacity: 0.12
+          });
+          const planetMesh = new THREE.LineSegments(wireframeGeo, sphereMat);
+          planetGroup.add(planetMesh);
+
+          // 2. Pontos na Superfície
+          const ptsCount = 350;
+          const ptsGeo = new THREE.BufferGeometry();
+          const ptsPos = new Float32Array(ptsCount * 3);
+
+          for (let i = 0; i < ptsCount * 3; i += 3) {
+            const u = Math.random();
+            const v = Math.random();
+            const theta = u * 2.0 * Math.PI;
+            const phi = Math.acos(2.0 * v - 1.0);
+            const r = 3.85;
+
+            ptsPos[i] = r * Math.sin(phi) * Math.cos(theta);
+            ptsPos[i + 1] = r * Math.sin(phi) * Math.sin(theta);
+            ptsPos[i + 2] = r * Math.cos(phi);
+          }
+
+          ptsGeo.setAttribute('position', new THREE.BufferAttribute(ptsPos, 3));
+          const ptsMat = new THREE.PointsMaterial({ size: 0.06, color: 0x0284c7, transparent: true, opacity: 0.4 });
+          const planetDots = new THREE.Points(ptsGeo, ptsMat);
+          planetGroup.add(planetDots);
+
+          // 3. Anel Cibernético
+          const ringGeo = new THREE.RingGeometry(5.0, 6.2, 48);
+          const ringWire = new THREE.WireframeGeometry(ringGeo);
+          const ringMat = new THREE.LineBasicMaterial({ color: 0x1e293b, transparent: true, opacity: 0.2 });
+          const planetRing = new THREE.LineSegments(ringWire, ringMat);
+          planetRing.rotation.x = Math.PI / 2.5;
+          planetGroup.add(planetRing);
+
+          scene.add(planetGroup);
+          camera.position.z = 14;
+
+          let targetZ = 14;
+          const handleScroll = () => {
+            const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollRatio = Math.min(1, Math.max(0, window.scrollY / (maxScroll || 1)));
+            targetZ = 14 - scrollRatio * 6.5;
+          };
+
+          window.addEventListener('scroll', handleScroll, { passive: true });
+
+          let animId;
+          const animate = () => {
+            animId = requestAnimationFrame(animate);
+
+            planetGroup.rotation.y += 0.0012;
+            planetGroup.rotation.x += 0.0004;
+
+            camera.position.z += (targetZ - camera.position.z) * 0.05;
+
+            renderer.render(scene, camera);
+          };
+          animate();
+
+          const handleResize = () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+
+            if (window.innerWidth < 768) {
+              planetGroup.position.set(0, -1, -1);
+            } else {
+              planetGroup.position.set(4.5, 0.5, -1);
+            }
+          };
           window.addEventListener('resize', handleResize);
-          return () => window.removeEventListener('resize', handleResize);
+          handleResize();
+
+          return () => {
+            window.removeEventListener('scroll', handleScroll);
+            window.removeEventListener('resize', handleResize);
+            cancelAnimationFrame(animId);
+          };
         }, []);
 
-        // Valores responsivos para a animação
-        const ellipseHoverX = isMobile ? -80 : -150;
-        const cardHoverWidth = isMobile ? 220 : 340;
-        const cardHoverX = isMobile ? -40 : -100;
+        return null;
+      }
 
+      // =========================================================================
+      // NAVBAR SLIM COM ÍCONES SOCIAIS
+      // =========================================================================
+      function Navbar() {
         return (
-          <div 
-            className="relative flex items-center justify-center w-full max-w-[600px] h-[130px] sm:h-[180px] cursor-pointer mx-auto mb-2"
-            onMouseEnter={() => !isMobile && setIsHovered(true)} 
-            onMouseLeave={() => !isMobile && setIsHovered(false)}
-            onClick={() => isMobile && setIsHovered(!isHovered)}
-          >
-            <div className="relative flex items-center justify-center">
-              
-              {/* 1. A ELIPSE (FOTO DE PERFIL) */}
-              <motion.div
-                animate={{ 
-                  x: isHovered ? ellipseHoverX : 0,
-                  scale: isHovered ? (isMobile ? 1.02 : 1.05) : 1
-                }}
-                transition={{ type: "spring", stiffness: 100, damping: 20 }}
-              className={`relative z-20 w-28 h-28 sm:w-40 sm:h-40 rounded-full p-1 bg-gradient-to-tr from-cyan-400 to-blue-600 shadow-[0_0_30px_rgba(0,242,255,0.4)] ${isDevMode ? 'cursor-pointer' : 'cursor-default'}`}
-                onClick={onProfileClick}
-              >
-                <div className="w-full h-full rounded-full overflow-hidden border-[4px] border-[#030712] bg-[#020617]">
-                  <img 
-                    src={profileImage} 
-                    alt="Perfil" 
-                    className="w-full h-full object-cover"
-                    onError={(e) => { e.target.onerror = null; e.target.src = "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22200%22%20height%3D%22200%22%3E%3Crect%20width%3D%22200%22%20height%3D%22200%22%20fill%3D%22%23020617%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20font-family%3D%22sans-serif%22%20font-size%3D%2235%22%20font-weight%3D%22bold%22%20fill%3D%22%2300f2ff%22%20dominant-baseline%3D%22middle%22%20text-anchor%3D%22middle%22%3EPerfil%3C%2Ftext%3E%3C%2Fsvg%3E"; }} 
-                  />
-                </div>
-              </motion.div>
+          <header className="sticky top-0 z-50 bg-[#060913]/90 backdrop-blur-md border-b border-slate-800/40">
+            <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
+              <a href="#" className="font-mono text-sm font-bold text-white tracking-tight flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-cyan-400"></span>
+                JONATHA DANTAS <span className="text-slate-500 font-normal text-xs">// QA ENGINEER</span>
+              </a>
 
-              {/* 2. O CARD (RETÂNGULO) */}
-              <motion.div
-                initial={false}
-                style={{ originX: 0 }}
-                animate={{ 
-                  width: isHovered ? cardHoverWidth : 0,
-                  opacity: isHovered ? 1 : 0,
-                  x: isHovered ? cardHoverX : 0, // Desliza para criar a sobreposição adaptada
-                }}
-                transition={{ type: "spring", stiffness: 100, damping: 20 }}
-                className="absolute left-[50%] z-10 h-24 sm:h-36 bg-[#0a0f1c] border border-cyan-500/30 rounded-r-2xl overflow-hidden shadow-[0_0_25px_rgba(0,242,255,0.2)]"
-              >
-                <div style={{ width: cardHoverWidth }} className="h-full relative">
-                  <img 
-                    src={bannerImg} 
-                    alt="Banner" 
-                    className="w-full h-full object-cover opacity-80"
-                  />
-                  {/* Overlay Escuro Mesclado com a Foto */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-[#030712] via-transparent to-transparent"></div>
-                  
-                  {/* Texto Interno do Card */}
-                  <div className="absolute inset-0 flex flex-col justify-center items-end pr-6 pointer-events-none">
-                    <p className="text-[10px] text-cyan-400/80 tracking-[0.3em] font-mono">SYSTEM ACTIVE</p>
-                  </div>
-                </div>
-              </motion.div>
+              <div className="flex items-center gap-4 text-xs font-medium text-slate-400">
+                <a href="#skills" className="hover:text-white transition-colors hidden sm:inline">Competências</a>
+                <a href="#projetos" className="hover:text-white transition-colors hidden sm:inline">Projetos</a>
+                
+                {/* Ícones Sociais no Navbar */}
+                <div className="flex items-center gap-2 border-l border-slate-800/80 pl-3">
+                  <a 
+                    href="https://github.com/JonathaITZ" 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="p-1.5 rounded-lg bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:border-cyan-400 transition-all"
+                    title="GitHub"
+                  >
+                    <Icons.Github />
+                  </a>
 
+                  <a 
+                    href="https://linkedin.com" 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="p-1.5 rounded-lg bg-slate-900 border border-slate-800 text-slate-300 hover:text-cyan-400 hover:border-cyan-400 transition-all"
+                    title="LinkedIn"
+                  >
+                    <Icons.Linkedin />
+                  </a>
+
+                  <a 
+                    href="https://wa.me/5583999999999" 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="p-1.5 rounded-lg bg-slate-900 border border-slate-800 text-slate-300 hover:text-emerald-400 hover:border-emerald-400 transition-all"
+                    title="WhatsApp"
+                  >
+                    <Icons.Whatsapp />
+                  </a>
+                </div>
+
+                <a 
+                  href="https://drive.google.com/file/d/1ogNnoWrpbI0D4IYEJj6DXWWy74pFOgn3/view?usp=drive_link" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="px-3.5 py-1.5 rounded-full border border-slate-700 text-slate-300 hover:text-white hover:border-cyan-400 transition-all font-mono text-[11px]"
+                >
+                  Currículo ↗
+                </a>
+              </div>
             </div>
-          </div>
+          </header>
         );
       }
 
-      function Dashboard() {
-        const [activeTab, setActiveTab] = useState('skills');
-        
-        // Novos Estados para a página de Projetos e Formulário
-        const [currentView, setCurrentView] = useState('dashboard'); // 'dashboard' ou 'projects'
-        const [projectFilter, setProjectFilter] = useState('all');
-        
-        // =========================================================================
-        // DADOS HARDCODED (CÓDIGO-FONTE)
-        // Adicione, edite ou remova seus projetos diretamente aqui.
-        // =========================================================================
-        const [projects, setProjects] = useState([
+      // =========================================================================
+      // HERO SECTION COM BOTÕES DE REDES SOCIAIS (GIT, LINKEDIN, WHATSAPP)
+      // =========================================================================
+      function Hero() {
+        const profileImage = "https://i.postimg.cc/yY5cvK8j/IMG-20260422-220609.jpg";
+
+        return (
+          <section className="max-w-5xl mx-auto pt-12 pb-14 px-6">
+            <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12">
+              
+              {/* Profile Avatar */}
+              <div className="shrink-0">
+                <div className="w-36 h-36 sm:w-44 sm:h-44 rounded-full p-1 bg-slate-900 border border-slate-800 overflow-hidden relative">
+                  <img 
+                    src={profileImage} 
+                    alt="Jonatha Dantas" 
+                    className="w-full h-full object-cover rounded-full"
+                    onError={(e) => { e.target.onerror = null; e.target.src = "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22200%22%20height%3D%22200%22%3E%3Crect%20width%3D%22200%22%20height%3D%22200%22%20fill%3D%22%23020617%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20font-family%3D%22sans-serif%22%20font-size%3D%2235%22%20font-weight%3D%22bold%22%20fill%3D%22%2300f2ff%22%20dominant-baseline%3D%22middle%22%20text-anchor%3D%22middle%22%3EJD%3C%2Ftext%3E%3C%2Fsvg%3E"; }}
+                  />
+                </div>
+              </div>
+
+              {/* Título, Descrição e Botões Sociais */}
+              <div className="space-y-4 text-center md:text-left">
+                <div className="text-xs font-mono font-medium text-cyan-400 uppercase tracking-wider">
+                  Quality Assurance & Automation Architecture
+                </div>
+
+                <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
+                  Jonatha Dantas
+                </h1>
+
+                <p className="text-slate-400 text-sm sm:text-base leading-relaxed max-w-2xl font-normal">
+                  Especialista em garantir a qualidade de software através de automações E2E robustas com <strong className="text-slate-200">Cypress</strong> e <strong className="text-slate-200">Selenium (Python)</strong>, testes de API REST via <strong className="text-slate-200">Postman</strong> e validações de dados SQL.
+                </p>
+
+                {/* Botões de Ação & Redes Sociais */}
+                <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 pt-2">
+                  <a 
+                    href="mailto:jonatha.dantas.2019@gmail.com" 
+                    className="px-5 py-2.5 rounded-full bg-cyan-400 text-slate-950 font-bold text-xs hover:bg-cyan-300 transition-all"
+                  >
+                    Entrar em Contato
+                  </a>
+
+                  {/* Ícones com Links */}
+                  <div className="flex items-center gap-2">
+                    <a 
+                      href="https://github.com/JonathaITZ" 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="p-2.5 rounded-full bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:border-cyan-400 transition-all flex items-center gap-2 text-xs font-mono"
+                      title="GitHub Profile"
+                    >
+                      <Icons.Github />
+                      <span className="hidden sm:inline">GitHub</span>
+                    </a>
+
+                    <a 
+                      href="https://linkedin.com" 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="p-2.5 rounded-full bg-slate-900 border border-slate-800 text-slate-300 hover:text-cyan-400 hover:border-cyan-400 transition-all flex items-center gap-2 text-xs font-mono"
+                      title="LinkedIn Profile"
+                    >
+                      <Icons.Linkedin />
+                      <span className="hidden sm:inline">LinkedIn</span>
+                    </a>
+
+                    <a 
+                      href="https://wa.me/5583999999999" 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="p-2.5 rounded-full bg-slate-900 border border-slate-800 text-slate-300 hover:text-emerald-400 hover:border-emerald-400 transition-all flex items-center gap-2 text-xs font-mono"
+                      title="WhatsApp Direct"
+                    >
+                      <Icons.Whatsapp />
+                      <span className="hidden sm:inline">WhatsApp</span>
+                    </a>
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+
+
+          </section>
+        );
+      }
+
+      // =========================================================================
+      // COMPETÊNCIAS
+      // =========================================================================
+      function SkillsSection() {
+        const categories = [
           {
-            title: "E-commerce: Plataforma Completa",
-            excerpt: "Loja online com vitrine para o cliente e painel administrativo completo para o lojista.",
-            description: "Este projeto é uma solução completa para quem deseja vender pela internet, unindo uma loja visualmente atraente para o cliente a um painel de controle potente para o lojista.\n\nPara o Cliente: Desenvolvi uma vitrine moderna e organizada por categorias (como moda masculina, feminina e eletrônicos), facilitando a busca por produtos e proporcionando uma navegação fluida e intuitiva.\n\nPara o Lojista: Criei um painel administrativo onde é possível gerenciar todo o negócio em um só lugar. É possível cadastrar produtos com fotos e descrições detalhadas, controlar o estoque em tempo real, organizar categorias e acompanhar o desempenho das vendas de forma simples e rápida.",
-            banner: "assets/banners/ecommerce.png",
-            media: ["https://rubot-files.softcom.services/ShareX/2026/04/09.04.2026_21.46.50_REC.mp4"],
-            category: "Full Stack",
-            tags: ["HTML", "React", "PHP", "MySQL"]
+            title: "Automação & E2E",
+            skills: ["Cypress (E2E)", "Python + Selenium", "JavaScript / Node.js", "Page Object Model", "Relatórios Automáticos"]
           },
           {
+            title: "Garantia de Qualidade & Processos",
+            skills: ["Planejamento de Testes", "Casos de Teste & BDD", "Smoke & Regressão", "Reporte & Gestão de Bugs", "Validação de Requisitos"]
+          },
+          {
+            title: "APIs & Banco de Dados",
+            skills: ["Postman (Testes de API)", "Endpoints RESTful", "Queries SQL", "Validação de Integridade de Dados"]
+          }
+        ];
+
+        return (
+          <section id="skills" className="max-w-5xl mx-auto py-10 px-6 border-t border-slate-800/40">
+            <div className="mb-8">
+              <span className="text-xs font-mono text-slate-500 uppercase tracking-wider font-medium">// COMPETÊNCIAS TÉCNICAS</span>
+              <h2 className="text-xl sm:text-2xl font-bold text-white mt-0.5">Stack & Ferramentas</h2>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {categories.map((cat, idx) => (
+                <div key={idx} className="space-y-3">
+                  <h3 className="text-xs font-mono font-semibold text-cyan-400/90 uppercase tracking-wider">
+                    {cat.title}
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {cat.skills.map((skill, sIdx) => (
+                      <span 
+                        key={sIdx}
+                        className="px-3 py-1.5 rounded-lg bg-[#0b0f19] border border-slate-800 text-slate-300 text-xs font-medium hover:border-cyan-500/40 transition-colors"
+                      >
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        );
+      }
+
+      // =========================================================================
+      // PROJETOS
+      // =========================================================================
+      function ProjectsSection() {
+        const [filter, setFilter] = useState('all');
+
+        const projects = [
+          {
+            id: 0,
+            title: "E-commerce: Plataforma Completa",
+            category: "Full Stack",
+            excerpt: "Loja online completa com vitrine para o cliente e painel administrativo para o lojista.",
+            banner: "assets/banners/ecommerce.png",
+            tags: ["React", "HTML", "PHP", "MySQL"]
+          },
+          {
+            id: 1,
             title: "Automação QA: Validação de Garantia",
-            excerpt: "Teste automatizado com Python e Selenium, validação de garantia e relatório .txt da execução.",
-            description: "Projeto focado em Quality Assurance e automação de testes, demonstrando minha evolução prática em qualidade de software.\n\nDesenvolvi uma automação com Python e Selenium que realiza o cadastro de um item de forma automática, validando a garantia do produto e trazendo mais segurança ao processo — reduzindo falhas manuais e aumentando a confiabilidade dos cenários testados.\n\nApós cada execução, o fluxo gera automaticamente um relatório em arquivo .txt com todo o progresso e o resultado da automação, além de screenshots de evidência em caso de sucesso ou falha.\n\nO código-fonte e o README com detalhes do fluxo estão disponíveis no repositório GitHub.",
-            banner: "assets/banners/qa-garantia.png",
-            media: ["https://vimeo.com/1196499631"],
             category: "QA",
-            tags: ["Python", "Selenium", "Relatório .txt"],
+            excerpt: "Automação em Python/Selenium para cadastro e validação de garantia com relatório .txt automático.",
+            banner: "assets/banners/qa-garantia.png",
+            tags: ["Python", "Selenium", "Automação QA"],
             repoUrl: "https://github.com/JonathaITZ/QA_testeautomatizado"
           },
           {
+            id: 2,
             title: "Testes E2E com Cypress: Login e Carrinho",
-            excerpt: "Primeira suíte de testes automatizados no front-end com Cypress — login (sucesso e erro) e fluxo de carrinho no Sauce Demo.",
-            description: "Projeto de estudos em Quality Assurance com Cypress 15.x para testes automatizados de front-end web. Montei minha primeira suíte E2E no site de prática Sauce Demo (Swag Labs), cobrindo cenários reais de uso.\n\nO que aprendi e apliquei:\n• Sintaxe básica do Cypress (cy.visit, cy.get, cy.type, cy.click, cy.should)\n• Criação de cenários com describe/it — caminho feliz e caminho triste\n• Localização de elementos por seletores CSS e data-test\n• Execução via interface gráfica (cypress:open) e linha de comando (cypress:run)\n\nTestes implementados:\n• login.cy.js — login com sucesso e login inválido\n• carrinho.cy.js — adicionar item ao carrinho e validar produto na sacola\n\nO código-fonte, README com instruções de execução (npm install, npx cypress install) e a estrutura completa do projeto estão no repositório GitHub.\n\nPróximos passos: comandos customizados, mais cenários e integração com CI/CD.",
-            banner: "assets/banners/cypress-e2e.png",
-            media: [
-              "assets/cypress/login-runner.png",
-              "assets/cypress/login-codigo.png",
-              "assets/cypress/carrinho-runner.png",
-              "assets/cypress/carrinho-codigo.png"
-            ],
             category: "QA",
-            tags: ["Cypress", "JavaScript", "Node.js", "E2E"],
+            excerpt: "Suíte E2E automatizada no Sauce Demo cobrindo login (caminho feliz/triste) e fluxo de carrinho.",
+            banner: "assets/banners/cypress-e2e.png",
+            tags: ["Cypress", "JavaScript", "E2E"],
             repoUrl: "https://github.com/JonathaITZ/testes-automatizados-cypress"
           },
           {
+            id: 3,
             title: "Testes E2E com Cypress: OrangeHRM",
-            excerpt: "Fluxo ponta a ponta no OrangeHRM — login, cadastro de funcionário no PIM e exclusão do registro ao final.",
-            description: "Projeto de estudos com Cypress no site demo do OrangeHRM — ambiente aberto para praticar automação de testes no front-end.\n\nFluxo automatizado ponta a ponta:\n• Login no sistema com credenciais válidas (Admin / admin123)\n• Cadastro de novo funcionário no módulo PIM / Personal Details\n• Exclusão do registro ao final do teste — limpeza dos dados para não deixar resíduos no ambiente de demonstração\n\nO que esse cenário reforça na prática:\n• Automação economiza tempo e garante consistência do fluxo sem execução manual repetitiva\n• Navegação entre módulos após autenticação\n• Preenchimento de formulários e validação de ações CRUD completas\n• Execução via interface gráfica (npm run cy:open) ou linha de comando (npm run cy:run)\n\nO README no GitHub traz o passo a passo completo para clonar, instalar dependências e rodar os testes localmente.",
-            media: ["https://rubot-files.softcom.services/ShareX/2026/06/11111111111111111.mp4"],
             category: "QA",
-            tags: ["Cypress", "JavaScript", "Node.js", "E2E", "OrangeHRM"],
+            excerpt: "Fluxo ponta a ponta no OrangeHRM: autenticação, cadastro no módulo PIM e limpeza de dados.",
+            banner: "",
+            tags: ["Cypress", "JavaScript", "OrangeHRM"],
             repoUrl: "https://github.com/JonathaITZ/cenario-de-teste-2"
           },
           {
-            title: "Testes E2E com Cypress: Login, Segurança e PIM",
-            excerpt: "Suíte de testes automatizados com Cypress no OrangeHRM demo — login válido, credenciais inválidas, proteção de rotas e cadastro de funcionário com limpeza de dados.",
-            description: "Projeto de estudos em Quality Assurance com Cypress para automação de testes no front-end web, utilizando o site demo OrangeHRM.\n\nA suíte cobre cenários reais de uso e validação de segurança, indo além do caminho feliz:\n• Login válido — autenticação com credenciais corretas e validação do acesso ao Dashboard\n• Login inválido — tentativa com senha incorreta e validação da mensagem de erro (Invalid credentials)\n• Proteção de rota — acesso direto à homepage via URL sem autenticação, confirmando redirecionamento para o login\n• PIM / Personal Details — cadastro de funcionário, salvamento dos dados e exclusão ao final do teste para manter o ambiente limpo\n\nO que apliquei:\n• Comandos Cypress: cy.visit, cy.get, cy.type, cy.click, cy.url, cy.contains, cy.should\n• Estrutura de testes com describe e it\n• Validações de URL, mensagens de erro e elementos visíveis na tela\n• Organização em arquivos separados por fluxo\n• Execução via interface gráfica (cy:open) e linha de comando (cy:run)\n\nO código-fonte e o README com instruções de execução estão disponíveis no repositório GitHub.",
-            media: ["https://vimeo.com/1203525130"],
+            id: 4,
+            title: "Testes E2E com Cypress: Login & Segurança",
             category: "QA",
-            tags: ["Cypress", "JavaScript", "Node.js", "E2E", "OrangeHRM"],
+            excerpt: "Suíte completa validando credenciais inválidas, proteção de rotas e gestão PIM.",
+            banner: "",
+            tags: ["Cypress", "Segurança QA", "E2E"],
             repoUrl: "https://github.com/JonathaITZ/cenario-de-teste-2"
           }
-        ]);
+        ];
 
-        const getProjectFilterKey = (category) => {
-          const c = String(category || '').toLowerCase();
-          if (c.includes('qa') || c.includes('automação') || c.includes('automacao')) return 'qa';
-          if (c.includes('full') || c.includes('stack') || c.includes('e-commerce') || c.includes('ecommerce')) return 'fullstack';
-          return 'other';
-        };
-
-        const getProjectPreview = (proj) => {
-          const excerpt = proj.excerpt || (proj.description || '').split('\n\n')[0];
-          const tags = proj.tags || [];
-          const category = proj.category || 'Projeto';
-          const filterKey = getProjectFilterKey(category);
-          const isQa = filterKey === 'qa';
-          const midiaList = Array.isArray(proj.media) ? proj.media : String(proj.media || '').split('\n').map(s => s.trim()).filter(Boolean);
-          const mediaUrl = midiaList[0] || '';
-          const bannerUrl = String(proj.banner || '').trim();
-          const hasBanner = Boolean(bannerUrl);
-          const cardUrl = bannerUrl || mediaUrl;
-          const isVideo = /\.(mp4|webm|ogg|mov)([?#].*)?$/i.test(mediaUrl) || /vimeo\.com|youtu\.be|youtube\.com/i.test(mediaUrl);
-          const isCardVideo = !hasBanner && /\.(mp4|webm|ogg|mov)([?#].*)?$/i.test(cardUrl);
-          const mediaLabel = isVideo ? 'Vídeo Demo' : (midiaList.length > 1 ? 'Galeria' : 'Preview');
-          return { excerpt, tags, category, mediaUrl, bannerUrl, cardUrl, hasBanner, isVideo, isCardVideo, filterKey, isQa, mediaLabel, midiaCount: midiaList.length };
-        };
-
-        const renderProjectCardMedia = (preview, title) => {
-          const imgClass = "w-full h-full object-cover transition-transform duration-700 group-hover:scale-105";
-          const onImgError = (e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/800x450/0b1221/06b6d4?text=Banner'; };
-
-          if (preview.hasBanner) {
-            return <img src={preview.bannerUrl} alt={`Banner — ${title}`} onError={onImgError} className={imgClass} />;
-          }
-          if (preview.isCardVideo) {
-            return <video src={preview.cardUrl} className={imgClass} autoPlay loop muted playsInline></video>;
-          }
-          if (preview.cardUrl.match(/(youtube\.com\/watch\?.*v=|youtu\.be\/)([^&]+)/i)) {
-            const id = preview.cardUrl.match(/(youtube\.com\/watch\?.*v=|youtu\.be\/)([^&]+)/i)[2];
-            return <img src={`https://img.youtube.com/vi/${id}/hqdefault.jpg`} alt="" className={imgClass} />;
-          }
-          if (preview.cardUrl.match(/vimeo\.com\/(?:video\/)?(\d+)/i)) {
-            const id = preview.cardUrl.match(/vimeo\.com\/(?:video\/)?(\d+)/i)[1];
-            return <img src={`https://vumbnail.com/${id}.jpg`} alt="" className={imgClass} />;
-          }
-          return <img src={preview.cardUrl} alt={title} onError={onImgError} className={imgClass} />;
-        };
-
-        const [newProject, setNewProject] = useState({ title: '', media: '', description: '' });
-        const [editingIndex, setEditingIndex] = useState(null);
-
-        // Estados para Foto de Perfil e Modo Dev
-        const [profileImage, setProfileImage] = useState('https://i.postimg.cc/yY5cvK8j/IMG-20260422-220609.jpg');
-        const [devClicks, setDevClicks] = useState(0);
-        const [isDevMode, setIsDevMode] = useState(false);
-
-        const [activeSkills, setActiveSkills] = useState([]);
-
-        const toggleSkill = (id) => {
-          setActiveSkills((prev) =>
-            prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
-          );
-        };
-
-        const renderSkillIcon = (skill, isActive) => {
-          if (typeof skill.icon === 'string') {
-            return <span className="text-base leading-none">{skill.icon}</span>;
-          }
-          return (
-            <span
-              className="inline-flex shrink-0 transition-all duration-300"
-              style={{
-                color: skill.color,
-                opacity: isActive ? 1 : 0.85,
-                filter: `drop-shadow(0px 0px ${isActive ? 8 : 5}px ${skill.color}${isActive ? 'cc' : '88'})`,
-              }}
-            >
-              {skill.icon}
-            </span>
-          );
-        };
-
-        const getSkillChipStyle = (skill, isActive) => {
-          const c = skill.color || '#22d3ee';
-          return {
-            borderColor: isActive ? `${c}ee` : `${c}80`,
-            boxShadow: isActive
-              ? `0 0 10px ${c}b3, 0 0 22px ${c}73, 0 0 36px ${c}40, inset 0 0 14px ${c}26`
-              : `0 0 8px ${c}80, 0 0 18px ${c}4d, inset 0 0 12px ${c}1a`,
-          };
-        };
-
-        // Estados para Skills e Experiências
-        const [skills, setSkills] = useState([
-          {
-            id: 'qa',
-            name: 'Quality Assurance',
-            color: '#10b981',
-            icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-[18px] h-[18px]"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>,
-          },
-          {
-            id: 'manual',
-            name: 'Testes Manuais',
-            color: '#38bdf8',
-            icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-[18px] h-[18px]"><path d="m9 9 5 12 2-4 4 2Z"/><path d="M2 12h.01"/><path d="M12 2h.01"/><path d="M12 22h.01"/><path d="M20 12h.01"/></svg>,
-          },
-          {
-            id: 'cases',
-            name: 'Casos de Teste',
-            color: '#60a5fa',
-            icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-[18px] h-[18px]"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M15 2H9a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1Z"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg>,
-          },
-          {
-            id: 'auto',
-            name: 'Automação (Python/Selenium)',
-            color: '#4ade80',
-            icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-[18px] h-[18px]"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>,
-          },
-          {
-            id: 'cypress',
-            name: 'Cypress',
-            color: '#2dd4bf',
-            icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-[18px] h-[18px]"><path d="m16 18 6-6-6-6"/><path d="m8 6-6 6 6 6"/></svg>,
-          },
-          {
-            id: 'api',
-            name: 'Testes de API (Postman)',
-            color: '#fb923c',
-            icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-[18px] h-[18px]"><rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"/><path d="M12 12V8"/></svg>,
-          },
-          {
-            id: 'sql',
-            name: 'SQL (Validação de Dados)',
-            color: '#818cf8',
-            icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-[18px] h-[18px]"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3"/></svg>,
-          },
-          {
-            id: 'smoke',
-            name: 'Smoke & Regressão',
-            color: '#c084fc',
-            icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-[18px] h-[18px]"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>,
-          },
-          {
-            id: 'bugs',
-            name: 'Reporte de Bugs',
-            color: '#f87171',
-            icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-[18px] h-[18px]"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/></svg>,
-          },
-          {
-            id: 'details',
-            name: 'Atenção a Detalhes',
-            color: '#facc15',
-            icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-[18px] h-[18px]"><path d="M6 18h8"/><path d="M3 22h18"/><path d="M14 9a3 3 0 0 0-3-3 3 3 0 0 0-3 3v3h6Z"/><path d="M9 3h1"/><path d="M14 3h1"/><path d="M12 9V3"/></svg>,
-          },
-        ]);
-        const [newSkill, setNewSkill] = useState({ name: '', icon: '' });
-        
-        const [experiences, setExperiences] = useState([
-          {
-            role: 'Analista de Sistemas / Suporte',
-            company: 'SOFTCOM TECNOLOGIA',
-            description: 'Atuação em suporte técnico, análise de requisitos e validação de dados com SQL. Em paralelo, desenvolvo automações e testes com foco em QA para elevar a confiabilidade dos sistemas.',
-            badges: 'SQL, SUPORTE, QA'
-          }
-        ]);
-
-        const [certificates, setCertificates] = useState([
-          {
-            title: 'Testando APIs utilizando Postman',
-            institution: 'Cursa - Cursos Online',
-            date: 'Mai/2026',
-            url: 'https://cursa.app/pt/meu-certificado',
-            image: 'assets/certificates/cursa-postman.png',
-            tags: 'Postman, API, Testes de API, QA'
-          },
-        ]);
-        // =========================================================================
-
-        const [newExperience, setNewExperience] = useState({ role: '', company: '', description: '', badges: '' });
-        const [newCertificate, setNewCertificate] = useState({ title: '', institution: '', date: '', url: '', image: '', tags: '' });
-
-        const [areasOfInterest, setAreasOfInterest] = useState([
-          'QA Jr Remoto',
-          'Analista de Qualidade Jr',
-          'Testes Manuais e Automação',
-          'Testes de API (Postman)'
-        ]);
-
-        const clickTimeoutRef = useRef(null);
-
-        // Carrega a foto salva da memória
-        useEffect(() => {
-          // A leitura de inicialização do localStorage foi removida.
-          // Agora os dados são lidos exclusivamente do código-fonte acima.
-        }, []);
-
-        // Lógica do Modo Desenvolvedor
-        const handleLogoClick = () => {
-          if (isDevMode) return;
-          const newCount = devClicks + 1;
-          setDevClicks(newCount);
-          if (newCount >= 7) {
-            setIsDevMode(true);
-            alert('🔓 Modo Desenvolvedor Ativado! Você agora pode alterar sua foto clicando nela.');
-          }
-          clearTimeout(clickTimeoutRef.current);
-          clickTimeoutRef.current = setTimeout(() => setDevClicks(0), 2000);
-        };
-
-        // --- LÓGICA DE GERENCIAMENTO DE PROJETOS (Modo Dev) ---
-
-        const handleAddProject = (e) => {
-          e.preventDefault();
-          if (!newProject.title || !newProject.description) return;
-          
-          const mediaUrls = String(newProject.media || '').split('\n').map(s => s.trim()).filter(Boolean);
-          
-          // Validação de segurança para links do Lightshot (prnt.sc)
-          if (mediaUrls.some(url => url.includes('prnt.sc/') && !url.match(/\.(jpeg|jpg|gif|png|webp)$/i))) {
-            alert('⚠️ Link do Lightshot incomum!\n\nVocê copiou o link da página web. Para a foto aparecer no projeto, acesse esse link no navegador, clique com o botão direito na imagem e escolha "Copiar endereço da imagem".');
-            return;
-          }
-          
-          const finalMedia = mediaUrls; // Agora salva sempre como um array de mídias
-          
-          let updatedProjects;
-          if (editingIndex !== null) {
-            updatedProjects = [...projects];
-            updatedProjects[editingIndex] = { ...newProject, media: finalMedia };
-            setEditingIndex(null);
-          } else {
-            updatedProjects = [...projects, { ...newProject, media: finalMedia }];
-          }
-          
-          setProjects(updatedProjects);
-          setNewProject({ title: '', media: '', description: '' }); // Limpa o form
-          
-          alert("⚠️ PROJETO ADICIONADO VISUALMENTE!\n\nEle vai sumir se você der F5 agora. Para salvar de vez no código:\n1. Role a tela para cima.\n2. Clique no botão amarelo '📋 COPIAR CÓDIGO DOS PROJETOS'.\n3. Abra o seu index.html, cole o código lá e salve o arquivo.");
-        };
-
-        const editProject = (idx, e) => {
-          e.stopPropagation();
-          setEditingIndex(idx);
-          const proj = projects[idx];
-          setNewProject({ ...proj, media: Array.isArray(proj.media) ? proj.media.join('\n') : (proj.media || '') });
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        };
-
-        const deleteProject = (idx, e) => {
-          e.stopPropagation();
-          if (window.confirm('Excluir sistema permanentemente do banco de dados?')) {
-            const updatedProjects = projects.filter((_, i) => i !== idx);
-            setProjects(updatedProjects);
-            if (editingIndex === idx) {
-              setEditingIndex(null);
-              setNewProject({ title: '', media: '', description: '' });
-            }
-          }
-        };
-
-        // --- LÓGICA DE SKILLS E EXPERIÊNCIAS (Modo Dev) ---
-        
-        const handleAddSkill = (e) => {
-          e.preventDefault();
-          if (!newSkill.name || !newSkill.icon) return;
-          const updated = [...skills, {
-            id: `custom-${Date.now()}`,
-            name: newSkill.name,
-            color: '#22d3ee',
-            icon: newSkill.icon,
-          }];
-          setSkills(updated);
-          setNewSkill({ name: '', icon: '' });
-        };
-
-        const deleteSkill = (idx) => {
-          if(window.confirm('Tem certeza que deseja remover esta skill?')) {
-            const updated = skills.filter((_, i) => i !== idx);
-            setSkills(updated);
-          }
-        };
-
-        const handleAddExperience = (e) => {
-          e.preventDefault();
-          if (!newExperience.role || !newExperience.company) return;
-          const updated = [...experiences, newExperience];
-          setExperiences(updated);
-          setNewExperience({ role: '', company: '', description: '', badges: '' });
-        };
-
-        const deleteExperience = (idx) => {
-          if(window.confirm('Tem certeza que deseja remover esta experiência?')) {
-            const updated = experiences.filter((_, i) => i !== idx);
-            setExperiences(updated);
-          }
-        };
-
-        const handleAddCertificate = (e) => {
-          e.preventDefault();
-          if (!newCertificate.title || !newCertificate.institution) return;
-          const updated = [...certificates, newCertificate];
-          setCertificates(updated);
-          setNewCertificate({ title: '', institution: '', date: '', url: '', image: '', tags: '' });
-        };
-
-        const deleteCertificate = (idx) => {
-          if (window.confirm('Tem certeza que deseja remover este certificado?')) {
-            const updated = certificates.filter((_, i) => i !== idx);
-            setCertificates(updated);
-          }
-        };
-
-        // Classe utilitária reutilizável para o efeito Glassmorphism Neon
-        const glassClass = "bg-[#0a0f1c]/60 backdrop-blur-xl border border-cyan-500/30 rounded-2xl shadow-[0_0_20px_rgba(34,211,238,0.15)]";
+        const filtered = projects.filter(p => filter === 'all' || (filter === 'qa' && p.category === 'QA') || (filter === 'fullstack' && p.category === 'Full Stack'));
 
         return (
-          <div className="min-h-screen relative overflow-hidden p-4 sm:p-6 md:p-12">
-            {/* Elementos de Brilho Neon no Fundo */}
-            <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-cyan-500/20 rounded-full blur-[120px] pointer-events-none"></div>
-            <div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-blue-600/20 rounded-full blur-[120px] pointer-events-none"></div>
-
-            <div className="max-w-6xl mx-auto relative z-10">
-              
-              {/* Cabeçalho do Dashboard */}
-              <motion.header 
-                initial={{ opacity: 0, y: -100, scale: 0.5 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                transition={{ type: "spring", bounce: 0.6, duration: 1.2 }}
-                className="mb-6 md:mb-16 flex flex-col items-center justify-center text-center"
-              >
-                  {/* Card Superior Neon com Foto e Redes Sociais */}
-                    <div className="relative py-4 px-6 md:py-5 md:px-8 rounded-[2.5rem] border border-cyan-500/40 bg-gradient-to-b from-cyan-900/20 to-[#0a0f1c]/60 shadow-[0_0_40px_rgba(34,211,238,0.15)] flex flex-col items-center mb-4 md:mb-6 w-full backdrop-blur-md">
-                    {/* Linha de brilho superior para destaque */}
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-[1px] bg-gradient-to-r from-transparent via-cyan-400/50 to-transparent shadow-[0_0_8px_rgba(34,211,238,0.3)]"></div>
-
-                      {/* Redes Sociais no Canto Esquerdo Superior */}
-                      <div className="absolute top-1/2 -translate-y-1/2 left-3 sm:left-4 md:left-8 flex flex-col gap-2 md:gap-4 z-20">
-                        <a href="https://github.com/JonathaITZ" target="_blank" rel="noopener noreferrer" className="p-2 md:p-3.5 rounded-full bg-[#030712]/80 backdrop-blur-md border border-cyan-500/30 text-slate-400 hover:text-cyan-400 hover:border-cyan-400 hover:bg-cyan-900/50 transition-all duration-300 hover:scale-110 hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(34,211,238,0.4)] group" title="GitHub">
-                          <svg className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 transform group-hover:scale-110 transition-transform drop-shadow-[0_0_5px_rgba(34,211,238,0.5)]" fill="currentColor" viewBox="0 0 24 24"><path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" /></svg>
-                        </a>
-                        <a href="https://www.linkedin.com/in/jonatha-dantas-38483a1b3/" target="_blank" rel="noopener noreferrer" className="p-2 md:p-3.5 rounded-full bg-[#030712]/80 backdrop-blur-md border border-cyan-500/30 text-slate-400 hover:text-cyan-400 hover:border-cyan-400 hover:bg-cyan-900/50 transition-all duration-300 hover:scale-110 hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(34,211,238,0.4)] group" title="LinkedIn">
-                          <svg className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 transform group-hover:scale-110 transition-transform drop-shadow-[0_0_5px_rgba(34,211,238,0.5)]" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-                        </a>
-                        <a href="https://wa.me/5583996190083" target="_blank" rel="noopener noreferrer" className="p-2 md:p-3.5 rounded-full bg-[#030712]/80 backdrop-blur-md border border-cyan-500/30 text-slate-400 hover:text-cyan-400 hover:border-cyan-400 hover:bg-cyan-900/50 transition-all duration-300 hover:scale-110 hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(34,211,238,0.4)] group" title="WhatsApp">
-                          <svg className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 transform group-hover:scale-110 transition-transform drop-shadow-[0_0_5px_rgba(34,211,238,0.5)]" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.422-.885-.75-1.482-1.673-1.656-1.972-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-                        </a>
-                      </div>
-
-                    <motion.div 
-                        animate={{ y: [0, -10, 0] }}
-                      transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-                        className="w-full mt-2 md:-mt-2"
-                    >
-                      <ProfileCard 
-                        profileImage={profileImage}
-                        isDevMode={isDevMode}
-                        onProfileClick={() => {
-                          if (isDevMode) {
-                            const url = prompt("Insira o link (URL) da nova foto de perfil:");
-                            if (url) setProfileImage(url);
-                          }
-                        }}
-                      />
-                    </motion.div>
-
-                      <div className="mt-1 md:-mt-6">
-                      <h1 
-                        onClick={handleLogoClick}
-                          className="text-2xl md:text-3xl font-extrabold tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 drop-shadow-[0_0_15px_rgba(34,211,238,0.4)] cursor-pointer select-none"
-                        title="Clique 7x para Modo Dev"
-                      >
-                        DANTAS
-                      </h1>
-                      <p className="text-cyan-400/70 text-[10px] md:text-xs font-mono tracking-[0.25em] mt-1">QA · AUTOMAÇÃO · QUALIDADE</p>
-                    </div>
-
-                      <a href="https://drive.google.com/file/d/1ogNnoWrpbI0D4IYEJj6DXWWy74pFOgn3/view?usp=drive_link" target="_blank" rel="noopener noreferrer" className="mt-1 mb-1 inline-flex items-center gap-1 md:gap-1.5 px-3 py-1 md:px-4 md:py-1.5 rounded-full bg-cyan-500/10 border border-cyan-400 text-cyan-400 hover:bg-cyan-400 hover:text-slate-900 transition-all duration-300 text-[10px] md:text-xs font-bold tracking-widest shadow-[0_0_15px_rgba(34,211,238,0.2)] hover:shadow-[0_0_25px_rgba(34,211,238,0.6)] hover:-translate-y-1 hover:scale-105 group">
-                      <svg className="w-3 h-3 md:w-4 md:h-4 group-hover:animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                      VER CURRÍCULO
-                    </a>
-                  </div>
-              </motion.header>
-
-          {isDevMode && (
-            <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 p-4 rounded-xl mb-8 max-w-4xl mx-auto text-center text-sm md:text-base font-bold shadow-[0_0_15px_rgba(234,179,8,0.1)]">
-              ⚠️ MODO DEV ATIVO: As alterações feitas na tela são apenas para teste visual! Ao apertar F5 tudo será apagado. Para salvar permanentemente, insira os dados direto no código-fonte do index.html.
-              <div className="mt-4 flex justify-center">
-                <button type="button" onClick={() => {
-                  const code = `        const [projects, setProjects] = useState(${JSON.stringify(projects, null, 2)});\n`;
-                  navigator.clipboard.writeText(code);
-                  alert("✅ Código dos projetos copiado!\n\nAgora abra o seu index.html no editor de código, encontre a linha 'const [projects, setProjects] = useState([]);' e cole o que você copiou por cima dela para salvar permanentemente.");
-                }} className="bg-yellow-500 hover:bg-yellow-400 text-[#030712] px-6 py-2 rounded-lg font-extrabold transition-colors shadow-[0_0_15px_rgba(234,179,8,0.4)] tracking-wide">
-                  📋 COPIAR CÓDIGO DOS PROJETOS PARA SALVAR
-                </button>
+          <section id="projetos" className="max-w-5xl mx-auto py-12 px-6 border-t border-slate-800/40">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4">
+              <div>
+                <span className="text-xs font-mono text-slate-500 uppercase tracking-wider font-medium">// PORTFOLIO SHOWCASE</span>
+                <h2 className="text-xl sm:text-2xl font-bold text-white mt-0.5">Projetos & Suítes de Teste</h2>
               </div>
-            </motion.div>
-          )}
 
-              <AnimatePresence mode="wait">
-                {currentView === 'dashboard' ? (
-                  <motion.div key="dashboard" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                      
-                      {/* 1. CARD PRINCIPAL DE PROJETOS (Interativo) */}
-                      <motion.div 
-                        initial={{ opacity: 0, y: 100, scale: 0.8 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ type: "spring", bounce: 0.5, duration: 1.2, delay: 0.2 }}
-                            onClick={() => {
-                              setCurrentView('projects');
-                              window.scrollTo({ top: 0, behavior: 'smooth' });
-                            }}
-                        className={`${glassClass} p-6 md:p-8 flex flex-col justify-between group hover:shadow-[0_0_40px_rgba(34,211,238,0.6)] hover:border-cyan-400/80 transition-all duration-500 hover:-translate-y-2 hover:scale-[1.02] cursor-pointer relative overflow-hidden`}
-                      >
+              <div className="flex items-center gap-1 bg-[#0b0f19] p-1 rounded-lg border border-slate-800 text-xs font-mono">
+                {['all', 'qa', 'fullstack'].map(f => (
+                  <button
+                    key={f}
+                    onClick={() => setFilter(f)}
+                    className={`px-3 py-1 rounded-md transition-all ${
+                      filter === f ? 'bg-cyan-400 text-slate-950 font-bold' : 'text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    {f === 'all' ? 'Todos' : f === 'qa' ? 'QA' : 'Full Stack'}
+                  </button>
+                ))}
+              </div>
+            </div>
 
-                        <div>
-                          <div className="w-16 h-16 mb-6 rounded-xl bg-gradient-to-br from-cyan-400/20 to-blue-500/20 border border-cyan-400/30 flex items-center justify-center text-cyan-400 shadow-[0_0_15px_rgba(34,211,238,0.2)] group-hover:scale-110 transition-transform">
-                            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
-                          </div>
-                          <h2 className="text-2xl md:text-3xl font-bold text-white mb-2 tracking-wide group-hover:text-cyan-400 transition-colors drop-shadow-[0_0_8px_rgba(34,211,238,0.3)]">PROJETOS</h2>
-                          <p className="text-slate-400 text-sm">Galeria de projetos em QA, automação de testes e soluções que desenvolvi.</p>
-                        </div>
-                        
-                        <div className="mt-8 flex items-center text-cyan-400 font-mono text-sm tracking-widest drop-shadow-[0_0_5px_rgba(34,211,238,0.5)]">
-                          VER PROJETOS <span className="ml-2 group-hover:translate-x-2 transition-transform">→</span>
-                        </div>
-                      </motion.div>
-
-                      {/* 2. SISTEMA DE ABAS (Skills e Experiência) */}
-                      <motion.div initial={{ opacity: 0, y: 100, scale: 0.8 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ type: "spring", bounce: 0.5, duration: 1.2, delay: 0.3 }} className="lg:col-span-2 flex flex-col">
-                        <div className="flex justify-start md:justify-center lg:justify-start space-x-4 md:space-x-6 mb-6 border-b border-cyan-500/20 pb-2 overflow-x-auto snap-x [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-                          <button onClick={() => setActiveTab('skills')} className={`pb-2 text-base md:text-lg font-bold tracking-wide transition-all whitespace-nowrap ${activeTab === 'skills' ? 'text-cyan-400 border-b-2 border-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.8)]' : 'text-slate-500 hover:text-slate-300'}`}>SKILLS</button>
-                          <button onClick={() => setActiveTab('experience')} className={`pb-2 text-base md:text-lg font-bold tracking-wide transition-all whitespace-nowrap ${activeTab === 'experience' ? 'text-cyan-400 border-b-2 border-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.8)]' : 'text-slate-500 hover:text-slate-300'}`}>EXPERIÊNCIA</button>
-                          <button onClick={() => setActiveTab('certificates')} className={`pb-2 text-base md:text-lg font-bold tracking-wide transition-all whitespace-nowrap ${activeTab === 'certificates' ? 'text-cyan-400 border-b-2 border-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.8)]' : 'text-slate-500 hover:text-slate-300'}`}>CERTIFICADOS</button>
-                          <button onClick={() => setActiveTab('about')} className={`pb-2 text-base md:text-lg font-bold tracking-wide transition-all whitespace-nowrap ${activeTab === 'about' ? 'text-cyan-400 border-b-2 border-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.8)]' : 'text-slate-500 hover:text-slate-300'}`}>SOBRE MIM</button>
-                          <button onClick={() => setActiveTab('others')} className={`pb-2 text-base md:text-lg font-bold tracking-wide transition-all whitespace-nowrap ${activeTab === 'others' ? 'text-cyan-400 border-b-2 border-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.8)]' : 'text-slate-500 hover:text-slate-300'}`}>OUTROS</button>
-                        </div>
-
-                        <div className={`${glassClass} p-5 md:p-6 flex-grow relative overflow-hidden min-h-[200px]`}>
-                          <AnimatePresence mode="wait">
-                            <motion.div 
-                              key={activeTab} 
-                              initial={{ opacity: 0, x: -20 }} 
-                              animate={{ opacity: 1, x: 0 }} 
-                              exit={{ opacity: 0, x: 20 }} 
-                              transition={{ duration: 0.3 }}
-                              className="w-full"
-                            >
-                              {activeTab === 'skills' && (
-                                <div>
-                                  {isDevMode && (
-                                    <form onSubmit={handleAddSkill} className="mb-6 flex flex-col md:flex-row gap-4 bg-cyan-950/20 p-4 rounded-xl border border-cyan-500/30">
-                                      <input type="text" placeholder="Ícone/Emoji (ex: ⚛️)" required value={newSkill.icon} onChange={e => setNewSkill({...newSkill, icon: e.target.value})} className="w-full md:w-32 p-3 rounded-lg bg-[#030712]/50 border border-cyan-500/30 text-white focus:outline-none focus:border-cyan-400" />
-                                      <input type="text" placeholder="Nome da Skill (ex: React)" required value={newSkill.name} onChange={e => setNewSkill({...newSkill, name: e.target.value})} className="flex-1 p-3 rounded-lg bg-[#030712]/50 border border-cyan-500/30 text-white focus:outline-none focus:border-cyan-400" />
-                                      <button type="submit" className="bg-cyan-400 hover:bg-cyan-300 text-slate-900 font-bold px-6 py-3 rounded-lg transition-colors">Adicionar</button>
-                                    </form>
-                                  )}
-
-                                  <h3 className="text-sm md:text-base font-semibold text-slate-300 mb-4">Minhas Competências</h3>
-
-                                  {skills.length === 0 ? (
-                                    <p className="text-slate-500 text-center py-6">Nenhuma skill adicionada ainda.</p>
-                                  ) : (
-                                    <div className="flex flex-wrap gap-2.5 md:gap-3">
-                                      {skills.map((skill, idx) => {
-                                        const skillId = skill.id || `skill-${idx}`;
-                                        const isActive = activeSkills.includes(skillId);
-                                        return (
-                                          <button
-                                            key={skillId}
-                                            type="button"
-                                            onClick={() => toggleSkill(skillId)}
-                                            className={`
-                                              group relative flex items-center gap-2 px-3.5 py-2 md:px-4 md:py-2.5 rounded-full
-                                              transition-all duration-300 ease-out outline-none text-xs md:text-sm font-medium border
-                                              hover:scale-[1.03] hover:brightness-110
-                                              ${isActive
-                                                ? 'bg-[#101726] text-slate-100'
-                                                : 'bg-[#0f1523] text-slate-300 hover:bg-[#12192b] hover:text-white'
-                                              }
-                                            `}
-                                            style={getSkillChipStyle(skill, isActive)}
-                                          >
-                                            {isDevMode && (
-                                              <span
-                                                role="button"
-                                                tabIndex={0}
-                                                onClick={(e) => { e.stopPropagation(); deleteSkill(idx); }}
-                                                className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-red-500/90 text-white text-[10px] flex items-center justify-center shadow-lg z-10"
-                                                title="Deletar Skill"
-                                              >
-                                                ✕
-                                              </span>
-                                            )}
-                                            {renderSkillIcon(skill, isActive)}
-                                            <span>{skill.name}</span>
-                                          </button>
-                                        );
-                                      })}
-                                    </div>
-                                  )}
-                                </div>
-                              )}
-
-                              {activeTab === 'experience' && (
-                                <div className="space-y-6">
-                                  {isDevMode && (
-                                    <form onSubmit={handleAddExperience} className="mb-10 flex flex-col gap-4 bg-cyan-950/20 p-6 rounded-xl border border-cyan-500/30">
-                                      <h4 className="text-cyan-400 font-bold">➕ Nova Experiência</h4>
-                                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <input type="text" placeholder="Cargo / Função" required value={newExperience.role} onChange={e => setNewExperience({...newExperience, role: e.target.value})} className="w-full p-3 rounded-lg bg-[#030712]/50 border border-cyan-500/30 text-white focus:outline-none focus:border-cyan-400" />
-                                        <input type="text" placeholder="Empresa" required value={newExperience.company} onChange={e => setNewExperience({...newExperience, company: e.target.value})} className="w-full p-3 rounded-lg bg-[#030712]/50 border border-cyan-500/30 text-white focus:outline-none focus:border-cyan-400" />
-                                      </div>
-                                      <textarea placeholder="Descrição das atividades..." required rows="3" value={newExperience.description} onChange={e => setNewExperience({...newExperience, description: e.target.value})} className="w-full p-3 rounded-lg bg-[#030712]/50 border border-cyan-500/30 text-white focus:outline-none focus:border-cyan-400"></textarea>
-                                      <input type="text" placeholder="Badges (separados por vírgula. Ex: PHP, MySQL, React)" value={newExperience.badges} onChange={e => setNewExperience({...newExperience, badges: e.target.value})} className="w-full p-3 rounded-lg bg-[#030712]/50 border border-cyan-500/30 text-white focus:outline-none focus:border-cyan-400" />
-                                      <button type="submit" className="bg-cyan-400 hover:bg-cyan-300 text-slate-900 font-bold p-3 rounded-lg w-full md:w-auto self-end transition-colors">Adicionar Experiência</button>
-                                    </form>
-                                  )}
-                                  <div className="space-y-8 md:space-y-10">
-                                    {experiences.length === 0 ? (
-                                      <p className="text-slate-500 text-center py-8 text-lg">Nenhuma experiência adicionada ainda.</p>
-                                    ) : (
-                                      experiences.map((exp, idx) => (
-                                        <div key={`exp-${idx}`} className="relative pl-6 md:pl-8 before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-0.5 before:bg-gradient-to-b before:from-cyan-400 before:to-transparent hover:translate-x-2 transition-transform duration-300 group">
-                                          <div className="absolute left-[-4.5px] top-2 w-3 h-3 rounded-full bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.8)]"></div>
-                                          {isDevMode && (
-                                            <button type="button" onClick={() => deleteExperience(idx)} className="absolute top-0 right-0 text-red-500 hover:text-red-400 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity text-xs md:text-sm bg-red-500/10 px-2 md:px-3 py-1 rounded border border-red-500/20" title="Deletar Experiência">🗑️ Remover</button>
-                                          )}
-                                          <h3 className="text-lg md:text-2xl font-bold text-white tracking-wide pr-16 md:pr-24">{exp.role}</h3>
-                                          <h4 className="text-cyan-400 font-mono text-xs md:text-sm mb-3 md:mb-4 tracking-widest drop-shadow-[0_0_5px_rgba(34,211,238,0.5)]">{exp.company}</h4>
-                                          <p className="text-slate-300 text-xs md:text-base leading-relaxed mb-4 md:mb-6">{exp.description}</p>
-                                          <div className="flex gap-2 md:gap-3 flex-wrap">
-                                            {exp.badges && exp.badges.split(',').map((badge, bIdx) => {
-                                              const b = badge.trim();
-                                              if (!b) return null;
-                                              return <span key={bIdx} className="px-3 md:px-4 py-1 md:py-1.5 text-[10px] md:text-xs font-mono font-bold rounded-md bg-cyan-900/40 text-cyan-300 border border-cyan-500/50 shadow-[0_0_10px_rgba(34,211,238,0.2)]">{b}</span>
-                                            })}
-                                          </div>
-                                        </div>
-                                      ))
-                                    )}
-                                  </div>
-                                </div>
-                              )}
-
-                              {activeTab === 'certificates' && (
-                                <div className="space-y-4">
-                                  {isDevMode && (
-                                    <form onSubmit={handleAddCertificate} className="mb-6 flex flex-col gap-4 bg-cyan-950/20 p-4 rounded-xl border border-cyan-500/30">
-                                      <h4 className="text-cyan-400 font-bold text-sm">➕ Novo Certificado</h4>
-                                      <input type="text" placeholder="Nome do certificado" required value={newCertificate.title} onChange={e => setNewCertificate({...newCertificate, title: e.target.value})} className="w-full p-3 rounded-lg bg-[#030712]/50 border border-cyan-500/30 text-white focus:outline-none focus:border-cyan-400" />
-                                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <input type="text" placeholder="Instituição (ex: Alura, Udemy)" required value={newCertificate.institution} onChange={e => setNewCertificate({...newCertificate, institution: e.target.value})} className="w-full p-3 rounded-lg bg-[#030712]/50 border border-cyan-500/30 text-white focus:outline-none focus:border-cyan-400" />
-                                        <input type="text" placeholder="Data (ex: Mar/2026)" value={newCertificate.date} onChange={e => setNewCertificate({...newCertificate, date: e.target.value})} className="w-full p-3 rounded-lg bg-[#030712]/50 border border-cyan-500/30 text-white focus:outline-none focus:border-cyan-400" />
-                                      </div>
-                                      <input type="url" placeholder="Link de verificação (opcional)" value={newCertificate.url} onChange={e => setNewCertificate({...newCertificate, url: e.target.value})} className="w-full p-3 rounded-lg bg-[#030712]/50 border border-cyan-500/30 text-white focus:outline-none focus:border-cyan-400" />
-                                      <input type="text" placeholder="URL da imagem do certificado (ex: assets/certificates/nome.png)" value={newCertificate.image} onChange={e => setNewCertificate({...newCertificate, image: e.target.value})} className="w-full p-3 rounded-lg bg-[#030712]/50 border border-cyan-500/30 text-white focus:outline-none focus:border-cyan-400" />
-                                      <input type="text" placeholder="Tags (separadas por vírgula. Ex: Cypress, QA)" value={newCertificate.tags} onChange={e => setNewCertificate({...newCertificate, tags: e.target.value})} className="w-full p-3 rounded-lg bg-[#030712]/50 border border-cyan-500/30 text-white focus:outline-none focus:border-cyan-400" />
-                                      <button type="submit" className="bg-cyan-400 hover:bg-cyan-300 text-slate-900 font-bold p-3 rounded-lg w-full md:w-auto self-end transition-colors">Adicionar Certificado</button>
-                                    </form>
-                                  )}
-
-                                  <h3 className="text-sm md:text-base font-semibold text-slate-300 mb-2">Certificado</h3>
-                                  <p className="text-xs text-slate-500 mb-4">Cursos e certificados relacionados à minha atuação em QA e automação de testes.</p>
-
-                                  {certificates.length === 0 ? (
-                                    <p className="text-slate-500 text-center py-8">Nenhum certificado cadastrado ainda.</p>
-                                  ) : (
-                                    <div className="grid grid-cols-1 gap-3 md:gap-4">
-                                      {certificates.map((cert, idx) => (
-                                        <div
-                                          key={`cert-${idx}`}
-                                          className="group relative flex gap-3 md:gap-4 p-4 rounded-xl bg-[#0a0f1c]/80 border border-cyan-500/25 hover:border-cyan-400/60 shadow-[0_0_12px_rgba(34,211,238,0.08)] hover:shadow-[0_0_22px_rgba(34,211,238,0.22)] transition-all duration-300"
-                                        >
-                                          {isDevMode && (
-                                            <button type="button" onClick={() => deleteCertificate(idx)} className="absolute top-2 right-2 text-red-500 hover:text-red-400 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity text-xs bg-red-500/10 px-2 py-1 rounded border border-red-500/20" title="Deletar Certificado">🗑️</button>
-                                          )}
-
-                                          {cert.image ? (
-                                            <a
-                                              href={cert.image}
-                                              target="_blank"
-                                              rel="noopener noreferrer"
-                                              onClick={e => e.stopPropagation()}
-                                              title="Ampliar certificado"
-                                              className="shrink-0 w-28 md:w-36 rounded-lg overflow-hidden border border-cyan-500/40 bg-white shadow-[0_0_14px_rgba(34,211,238,0.25)] hover:border-cyan-400/70 hover:shadow-[0_0_20px_rgba(34,211,238,0.4)] transition-all duration-300 group/img"
-                                            >
-                                              <img
-                                                src={cert.image}
-                                                alt={`Certificado — ${cert.title}`}
-                                                className="w-full h-auto object-contain group-hover/img:scale-105 transition-transform duration-300"
-                                                onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/320x220/ffffff/0ea5e9?text=Certificado'; }}
-                                              />
-                                            </a>
-                                          ) : (
-                                            <div className="w-10 h-10 md:w-11 md:h-11 rounded-xl bg-cyan-400/10 border border-cyan-500/40 flex items-center justify-center shrink-0 shadow-[0_0_14px_rgba(34,211,238,0.25)]">
-                                              <svg className="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 14l9-5-9-5-9 5 9 5z" />
-                                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 14l6.16-3.422A12.083 12.083 0 0112 21.5 12.083 12.083 0 015.84 10.578L12 14z" />
-                                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 14v7" />
-                                              </svg>
-                                            </div>
-                                          )}
-
-                                          <div className="flex-1 min-w-0 pr-8 md:pr-10">
-                                            <h4 className="font-bold text-white text-sm md:text-base leading-snug">{cert.title}</h4>
-                                            <p className="text-cyan-400 font-mono text-[10px] md:text-xs tracking-widest mt-1 uppercase">{cert.institution}</p>
-                                            {cert.date && <p className="text-slate-500 text-xs mt-1">{cert.date}</p>}
-
-                                            {cert.tags && (
-                                              <div className="flex flex-wrap gap-1.5 mt-2.5">
-                                                {cert.tags.split(',').map((tag, tIdx) => {
-                                                  const t = tag.trim();
-                                                  if (!t) return null;
-                                                  return (
-                                                    <span key={tIdx} className="px-2 py-0.5 text-[10px] font-mono font-bold rounded-md bg-cyan-900/40 text-cyan-300 border border-cyan-500/40">
-                                                      {t}
-                                                    </span>
-                                                  );
-                                                })}
-                                              </div>
-                                            )}
-
-                                            {cert.url && (
-                                              <a
-                                                href={cert.url}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                onClick={e => e.stopPropagation()}
-                                                className="inline-flex items-center gap-1.5 mt-3 text-[11px] md:text-xs font-bold text-cyan-400 hover:text-cyan-300 transition-colors"
-                                              >
-                                                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-                                                Ver certificado
-                                              </a>
-                                            )}
-                                          </div>
-                                        </div>
-                                      ))}
-                                    </div>
-                                  )}
-                                </div>
-                              )}
-
-                              {activeTab === 'about' && (
-                                <div className="space-y-6">
-                                  <div className="relative pl-6 md:pl-8 before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-0.5 before:bg-gradient-to-b before:from-cyan-400 before:to-transparent group">
-                                    <div className="absolute left-[-4.5px] top-2 w-3 h-3 rounded-full bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.8)]"></div>
-                                    <h3 className="text-lg md:text-2xl font-bold text-white tracking-wide flex items-center flex-wrap gap-2">
-                                      Olá, eu sou o Jonatha Dantas! 
-                                      <svg className="w-5 h-5 md:w-6 md:h-6 text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.8)]" viewBox="0 0 24 24" fill="currentColor" title="Darth Vader">
-                                        <path d="M11.96 0C7.48 0 3.28 2.65 1.56 6.77L0 12.39c2.3-1 4.71-1.78 7.23-2.31l-1.39 3.05c-1.89.28-3.72.7-5.49 1.25l-.26.85c.67.6 1.48 1 2.37 1.15l1.64-3.6 2.39-1.07c1.78-.18 3.6-.28 5.48-.28s3.7.1 5.48.28l2.39 1.07 1.64 3.6c.9-.15 1.7-.55 2.37-1.15l-.26-.85c-1.78-.55-3.6-.97-5.49-1.25l-1.39-3.05c2.51.53 4.93 1.3 7.23 2.31l-1.56-5.62C20.64 2.65 16.44 0 11.96 0zm-5.45 15.63c-1.4.15-2.77.38-4.1.7L4.19 24h3.69l-1.37-8.37zm10.9 0l-1.37 8.37h3.69l1.78-7.67c-1.33-.32-2.7-.55-4.1-.7zM9.4 16v1.39h5.12V16H9.4zm0 2v1.39h5.12V18H9.4zm-1.89.5v5.5H16.4v-5.5h-8.89z"/>
-                                      </svg>
-                                    </h3>
-                                    <h4 className="text-cyan-400 font-mono text-xs md:text-sm mb-3 md:mb-4 tracking-widest drop-shadow-[0_0_5px_rgba(34,211,238,0.5)]">ANALISTA DE QUALIDADE · QA</h4>
-                                    <div className="text-slate-300 text-xs md:text-base leading-relaxed space-y-3 md:space-y-4">
-                                      <p>Tenho 23 anos, sou fã de Star Wars e apaixonado por tecnologia. Atuo com foco em qualidade de software, testes manuais e automação para garantir que sistemas funcionem com confiabilidade no dia a dia.</p>
-                                      <p>Minha jornada combina suporte técnico, validação de dados com SQL e evolução em automação com Python e Selenium. Busco sempre entregar evidências claras, relatórios objetivos e processos de teste bem estruturados.</p>
-                                    </div>
-                                    <div className="mt-6 md:mt-8 flex gap-2 md:gap-3 flex-wrap">
-                                      <span className="px-3 md:px-4 py-1 md:py-1.5 text-[10px] md:text-xs font-mono font-bold rounded-md bg-cyan-900/40 text-cyan-300 border border-cyan-500/50 shadow-[0_0_10px_rgba(34,211,238,0.2)]">TESTES MANUAIS</span>
-                                      <span className="px-3 md:px-4 py-1 md:py-1.5 text-[10px] md:text-xs font-mono font-bold rounded-md bg-blue-900/40 text-blue-300 border border-blue-500/50 shadow-[0_0_10px_rgba(59,130,246,0.2)]">AUTOMAÇÃO</span>
-                                      <span className="px-3 md:px-4 py-1 md:py-1.5 text-[10px] md:text-xs font-mono font-bold rounded-md bg-purple-900/40 text-purple-300 border border-purple-500/50 shadow-[0_0_10px_rgba(168,85,247,0.2)]">TRABALHO EM EQUIPE</span>
-                                    </div>
-                                  </div>
-                                </div>
-                              )}
-
-                              {activeTab === 'others' && (
-                                <div className="space-y-10">
-                                  {/* Áreas de Interesse */}
-                                  <div className="relative pl-6 md:pl-8 before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-0.5 before:bg-gradient-to-b before:from-cyan-400 before:to-transparent group">
-                                    <div className="absolute left-[-4.5px] top-2 w-3 h-3 rounded-full bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.8)]"></div>
-                                    <h3 className="text-lg md:text-2xl font-bold text-white tracking-wide mb-4">Áreas de Interesse</h3>
-                                    <ul className="list-disc list-inside text-slate-300 text-xs md:text-base leading-relaxed space-y-2">
-                                      {areasOfInterest.map((area, idx) => (
-                                        <li key={idx} className="flex items-center">
-                                          <span className="mr-2 text-cyan-400">●</span> {area}
-                                        </li>
-                                      ))}
-                                    </ul>
-                                  </div>
-
-                                  {/* Formação */}
-                                  <div className="relative pl-6 md:pl-8 before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-0.5 before:bg-gradient-to-b before:from-cyan-400 before:to-transparent group">
-                                    <div className="absolute left-[-4.5px] top-2 w-3 h-3 rounded-full bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.8)]"></div>
-                                    <h3 className="text-lg md:text-2xl font-bold text-white tracking-wide mb-4">Formação Acadêmica</h3>
-                                    <div className="p-6 rounded-xl bg-[#0a0f1c]/80 border border-cyan-500/30 shadow-[0_0_20px_rgba(34,211,238,0.15)] group-hover:shadow-[0_0_30px_rgba(34,211,238,0.3)] transition-all duration-500">
-                                      <p className="text-cyan-400 font-bold text-lg md:text-xl tracking-wide drop-shadow-[0_0_8px_rgba(34,211,238,0.8)]">Análise e Desenvolvimento de Sistemas</p>
-                                      <p className="text-slate-400 text-sm mt-2 tracking-widest font-mono">ENSINO SUPERIOR</p>
-                                    </div>
-                                  </div>
-
-                                  {/* Componente de Localização */}
-                                  <div className="relative pl-6 md:pl-8 before:content-[''] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-0.5 before:bg-gradient-to-b before:from-cyan-400 before:to-transparent group">
-                                    <div className="absolute left-[-4.5px] top-2 w-3 h-3 rounded-full bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.8)]"></div>
-                                    <h3 className="text-lg md:text-2xl font-bold text-white tracking-wide mb-4">Localização</h3>
-                                    
-                                    <div className="flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-4 sm:gap-6 p-5 sm:p-6 rounded-xl bg-[#0a0f1c]/80 border border-cyan-500/30 shadow-[0_0_20px_rgba(34,211,238,0.15)] group-hover:shadow-[0_0_30px_rgba(34,211,238,0.3)] transition-all duration-500">
-                                      <style>
-                                        {`
-                                          .neon-loader {
-                                            width: 44.8px;
-                                            height: 44.8px;
-                                            position: relative;
-                                            transform: rotate(45deg);
-                                            cursor: pointer;
-                                          }
-                                          .neon-loader:before,
-                                          .neon-loader:after {
-                                            content: "";
-                                            position: absolute;
-                                            inset: 0;
-                                            border-radius: 50% 50% 0 50%;
-                                            background: transparent;
-                                            /* Substituímos o #ff4747 pelo cyan-400 com brilho neon */
-                                            background-image: radial-gradient(circle 11.2px at 50% 50%, transparent 94%, #22d3ee);
-                                            filter: drop-shadow(0 0 5px rgba(34,211,238,0.8));
-                                          }
-                                          .neon-loader:after {
-                                            animation: pulse-neon 1s infinite;
-                                            transform: perspective(336px) translateZ(0px);
-                                          }
-                                          @keyframes pulse-neon {
-                                            to {
-                                              transform: perspective(336px) translateZ(168px);
-                                              opacity: 0;
-                                            }
-                                          }
-                                        `}
-                                      </style>
-                                      
-                                      {/* O botão carrega a classe criada no estilo acima */}
-                                      <button 
-                                        className="neon-loader hover:scale-110 transition-transform duration-300 focus:outline-none flex-shrink-0" 
-                                        title="Ver no Mapa"
-                                        onClick={() => window.open('https://maps.google.com/?q=João+Pessoa,+Paraíba', '_blank')}
-                                      ></button>
-
-                                      <div className="text-center sm:text-left">
-                                        <p className="text-cyan-400 font-bold text-lg md:text-xl tracking-wide drop-shadow-[0_0_8px_rgba(34,211,238,0.8)]">João Pessoa, Paraíba</p>
-                                        <p className="text-slate-400 text-sm mt-1 tracking-widest font-mono">BRASIL</p>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              )}
-
-
-                            </motion.div>
-                          </AnimatePresence>
-                        </div>
-                      </motion.div>
-                    </div>
-                  </motion.div>
-                ) : (
-                  <motion.div key="projects" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
-                    
-                    <motion.button initial={{ opacity: 0, x: -50, scale: 0.5 }} animate={{ opacity: 1, x: 0, scale: 1 }} transition={{ type: "spring", bounce: 0.6, duration: 0.8 }} onClick={() => {
-                      setCurrentView('dashboard');
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
-                    }} className="inline-flex items-center text-cyan-400 hover:text-cyan-300 transition-colors font-semibold text-sm mb-6 group">
-                      <svg className="w-4 h-4 mr-1.5 group-hover:-translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-                      Voltar ao início
-                    </motion.button>
-
-                    {/* Formulário do Modo Dev */}
-                    {isDevMode && (
-                      <motion.form initial={{ opacity: 0, y: -100, scale: 0.8 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ type: "spring", bounce: 0.5, duration: 1, delay: 0.2 }} onSubmit={handleAddProject} className={`${glassClass} p-5 md:p-8 mb-8 md:mb-12 relative border-cyan-400/50 shadow-[0_0_30px_rgba(34,211,238,0.1)]`}>
-                        <h3 className="text-xl font-bold mb-6 text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.5)]">{editingIndex !== null ? '✏️ EDITAR PROJETO' : '➕ NOVO PROJETO NO BANCO DE DADOS'}</h3>
-                        
-                        <div className="mb-6">
-                          <input type="text" placeholder="Nome do Sistema / Projeto" required value={newProject.title} onChange={(e) => setNewProject({...newProject, title: e.target.value})} className="w-full p-4 rounded-xl bg-[#030712]/50 border border-cyan-500/30 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all" />
-                        </div>
-                        
-                        <textarea placeholder="Insira as URLs das imagens ou vídeos (uma por linha)..." rows="4" value={newProject.media} onChange={(e) => setNewProject({...newProject, media: e.target.value})} className="w-full p-4 mb-6 rounded-xl bg-[#030712]/50 border border-cyan-500/30 text-cyan-400 font-mono text-sm placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all"></textarea>
-                        <textarea placeholder="Descreva a finalidade e as tecnologias usadas no projeto..." required rows="3" value={newProject.description} onChange={(e) => setNewProject({...newProject, description: e.target.value})} className="w-full p-4 mb-6 rounded-xl bg-[#030712]/50 border border-cyan-500/30 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all"></textarea>
-                        
-                        <button type="submit" className="w-full bg-cyan-400 hover:bg-cyan-300 text-[#030712] font-extrabold tracking-widest py-4 px-4 rounded-xl transition-all shadow-[0_0_15px_rgba(34,211,238,0.4)] hover:shadow-[0_0_25px_rgba(34,211,238,0.6)]">
-                          {editingIndex !== null ? 'SALVAR ALTERAÇÕES' : 'INJETAR PROJETO'}
-                        </button>
-                      </motion.form>
-                    )}
-
-                    {/* Cabeçalho e filtros da galeria */}
-                    <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
-                      <div>
-                        <h2 className="text-xl md:text-2xl font-extrabold tracking-tight text-white flex items-center gap-2">
-                          <span className="w-2 h-5 md:h-6 bg-cyan-400 rounded-full inline-block shadow-[0_0_10px_rgba(34,211,238,0.6)]"></span>
-                          Projetos em Destaque
-                        </h2>
-                        <p className="text-xs text-slate-400 mt-1">Navegue pelos trabalhos e automações que desenvolvi.</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filtered.map((proj) => (
+                <div key={proj.id} className="card-clean rounded-2xl overflow-hidden flex flex-col justify-between group">
+                  
+                  <div className="relative h-44 bg-slate-950 overflow-hidden">
+                    {proj.banner ? (
+                      <img src={proj.banner} alt={proj.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center bg-slate-900 text-slate-500 text-xs font-mono">
+                        ▶ Vídeo Demonstração
                       </div>
-                      <div className="flex gap-2 p-1.5 rounded-xl bg-[#0a0f1c]/80 border border-cyan-500/20 self-start sm:self-auto">
-                        {[
-                          { id: 'all', label: 'Todos' },
-                          { id: 'qa', label: 'QA & Automação' },
-                          { id: 'fullstack', label: 'Full Stack' },
-                        ].map((item) => (
-                          <button
-                            key={item.id}
-                            type="button"
-                            onClick={() => setProjectFilter(item.id)}
-                            className={`px-3 md:px-4 py-1.5 text-[10px] md:text-xs font-bold rounded-lg transition-all duration-300 whitespace-nowrap ${projectFilter === item.id ? 'bg-cyan-400 text-slate-950 shadow-[0_0_12px_rgba(34,211,238,0.35)]' : 'text-slate-400 hover:text-white'}`}
-                          >
-                            {item.label}
-                          </button>
+                    )}
+                    <span className="absolute top-2.5 right-2.5 bg-slate-950/80 text-slate-300 text-[10px] font-mono px-2 py-0.5 rounded border border-slate-800">
+                      {proj.category}
+                    </span>
+                  </div>
+
+                  <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
+                    <div>
+                      <h3 className="text-base font-bold text-white group-hover:text-cyan-400 transition-colors mb-1.5">
+                        {proj.title}
+                      </h3>
+                      <p className="text-xs text-slate-400 leading-relaxed font-normal">
+                        {proj.excerpt}
+                      </p>
+                    </div>
+
+                    <div>
+                      <div className="flex flex-wrap gap-1.5 mb-4">
+                        {proj.tags.map((t, idx) => (
+                          <span key={idx} className="px-2 py-0.5 rounded text-[10px] font-mono bg-slate-900 border border-slate-800 text-slate-400">
+                            #{t}
+                          </span>
                         ))}
                       </div>
+
+                      <div className="flex items-center justify-between pt-3 border-t border-slate-800/60 text-xs font-mono">
+                        <a href={`projeto.html?id=${proj.id}`} className="text-cyan-400 hover:underline font-semibold">
+                          Detalhes →
+                        </a>
+                        {proj.repoUrl && (
+                          <a href={proj.repoUrl} target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white">
+                            GitHub
+                          </a>
+                        )}
+                      </div>
                     </div>
+                  </div>
 
-                    {/* Lista de Projetos */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 pb-12 w-full">
-                      {projects.filter((proj) => projectFilter === 'all' || getProjectFilterKey(proj.category) === projectFilter).length === 0 ? (
-                        <p className="text-slate-500 text-center py-12 text-lg col-span-full">Nenhum projeto nesta categoria.</p>
-                      ) : (
-                        projects
-                          .map((proj, idx) => ({ proj, idx, preview: getProjectPreview(proj) }))
-                          .filter(({ preview }) => projectFilter === 'all' || preview.filterKey === projectFilter)
-                          .map(({ proj, idx, preview }, visibleIdx) => (
-                          <motion.article 
-                            key={idx} 
-                            initial={{ opacity: 0, y: 24 }} 
-                            animate={{ opacity: 1, y: 0 }} 
-                            transition={{ duration: 0.4, delay: 0.08 * visibleIdx }}
-                            onClick={() => {
-                              localStorage.setItem('projetoAtual', JSON.stringify({
-                                titulo: proj.title,
-                                descricao: proj.description,
-                                midia: proj.media,
-                                banner: proj.banner,
-                                excerpt: proj.excerpt,
-                                tags: proj.tags,
-                                category: proj.category,
-                                repoUrl: proj.repoUrl
-                              }));
-                              window.location.href = 'projeto.html';
-                            }}
-                            className={`group rounded-2xl bg-[#0a0f1c]/60 backdrop-blur-md border border-white/5 overflow-hidden cursor-pointer transition-all duration-500 hover:-translate-y-1.5 active:scale-[0.99] ${preview.isQa ? 'hover:border-cyan-500/40 hover:shadow-[0_15px_30px_rgba(34,211,238,0.15)]' : 'hover:border-blue-500/40 hover:shadow-[0_15px_30px_rgba(59,130,246,0.15)]'}`}
-                          >
-                            <div className="relative aspect-video overflow-hidden bg-slate-950">
-                              <div className="absolute inset-0 bg-gradient-to-t from-[#0a0f1c] via-[#0a0f1c]/20 to-transparent opacity-70 z-10 pointer-events-none"></div>
-                              {renderProjectCardMedia(preview, proj.title)}
-
-                              <div className="absolute top-4 left-4 z-20">
-                                <span className={`px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase shadow-md ${preview.isQa ? 'bg-cyan-400 text-slate-950' : 'bg-blue-500 text-slate-950'}`}>
-                                  {preview.category}
-                                </span>
-                              </div>
-
-                              <div className="absolute bottom-4 right-4 z-20">
-                                <span className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-900/90 border text-[10px] font-mono uppercase font-bold tracking-widest shadow-lg ${preview.isQa ? 'border-cyan-500/30 text-cyan-400' : 'border-blue-500/30 text-blue-400'}`}>
-                                  <span className={`w-2 h-2 rounded-full ${preview.isVideo ? 'bg-rose-500 animate-pulse' : 'bg-emerald-500'}`}></span>
-                                  {preview.mediaLabel}
-                                </span>
-                              </div>
-                            </div>
-
-                            <div className="p-5 md:p-6 relative">
-                              {isDevMode && (
-                                <div className="absolute top-4 right-4 flex gap-1.5 z-20" onClick={e => e.stopPropagation()}>
-                                  <button type="button" onClick={(e) => editProject(idx, e)} className="p-1.5 rounded-lg bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 text-sm" title="Editar">✏️</button>
-                                  <button type="button" onClick={(e) => deleteProject(idx, e)} className="p-1.5 rounded-lg bg-red-500/10 text-red-400 border border-red-500/30 text-sm" title="Excluir">🗑️</button>
-                                </div>
-                              )}
-                              <h3 className={`text-lg md:text-xl font-bold text-white mb-2 pr-16 transition-colors duration-300 ${preview.isQa ? 'group-hover:text-cyan-400' : 'group-hover:text-blue-400'}`}>
-                                {proj.title}
-                              </h3>
-                              <p className="text-sm text-slate-400 leading-relaxed mb-4 line-clamp-2">
-                                {preview.excerpt}
-                              </p>
-                              {preview.tags.length > 0 && (
-                                <div className="flex flex-wrap gap-2 mb-5">
-                                  {preview.tags.map((tag, tIdx) => (
-                                    <span key={tIdx} className="px-2.5 py-1 rounded-md text-[10px] font-mono font-bold bg-slate-900 border border-slate-800 text-slate-300">
-                                      {tag}
-                                    </span>
-                                  ))}
-                                </div>
-                              )}
-                              <div className="flex items-center justify-between pt-4 border-t border-slate-800/80">
-                                <span className={`inline-flex items-center gap-2 text-xs font-bold transition-all duration-300 group-hover:gap-3 ${preview.isQa ? 'text-cyan-400 group-hover:text-cyan-300' : 'text-blue-400 group-hover:text-blue-300'}`}>
-                                  Ver detalhes do projeto
-                                  <svg className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
-                                </span>
-                                {proj.repoUrl && (
-                                  <span className="text-[10px] font-mono text-slate-500 hidden sm:inline">GitHub</span>
-                                )}
-                              </div>
-                            </div>
-                          </motion.article>
-                          ))
-                      )}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
-                {/* Rodapé com Redes Sociais */}
-                <motion.footer 
-                  initial={{ opacity: 0, y: 24 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.3 }}
-                  className="mt-12 md:mt-16 pb-4 flex flex-col items-center justify-center relative z-10"
-                >
-                  <div>
-                <a href="mailto:jonatha.dantas.2019@gmail.com" className="inline-flex items-center gap-2 px-4 py-2 md:px-6 md:py-2.5 rounded-full bg-[#0a0f1c]/60 backdrop-blur-md border border-cyan-500/30 text-slate-300 hover:text-cyan-400 hover:border-cyan-400 hover:bg-cyan-900/30 transition-all duration-300 text-xs md:text-sm font-mono tracking-wide shadow-[0_0_15px_rgba(34,211,238,0.1)] hover:shadow-[0_0_25px_rgba(34,211,238,0.4)] hover:-translate-y-1 hover:scale-105 group">
-                  <svg className="w-4 h-4 md:w-5 md:h-5 text-cyan-400 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
-                  </svg>
-                  jonatha.dantas.2019@gmail.com
-                </a>
-              </div>
-                </motion.footer>
+                </div>
+              ))}
             </div>
+          </section>
+        );
+      }
+
+      // =========================================================================
+      // FOOTER COM ÍCONES SOCIAIS DESTACADOS
+      // =========================================================================
+      function Footer() {
+        return (
+          <footer className="max-w-5xl mx-auto py-12 px-6 border-t border-slate-800/40 text-center font-mono text-xs text-slate-500 space-y-4">
+            <p className="text-slate-300">Jonatha Dantas — Quality Assurance & Test Automation Architecture</p>
+            
+            <div className="flex items-center justify-center gap-4 pt-2">
+              <a 
+                href="https://github.com/JonathaITZ" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="flex items-center gap-1.5 text-slate-400 hover:text-white transition-colors"
+              >
+                <Icons.Github /> GitHub
+              </a>
+
+              <a 
+                href="https://linkedin.com" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="flex items-center gap-1.5 text-slate-400 hover:text-cyan-400 transition-colors"
+              >
+                <Icons.Linkedin /> LinkedIn
+              </a>
+
+              <a 
+                href="https://wa.me/5583999999999" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="flex items-center gap-1.5 text-slate-400 hover:text-emerald-400 transition-colors"
+              >
+                <Icons.Whatsapp /> WhatsApp
+              </a>
+            </div>
+
+            <p className="text-[11px] text-slate-600">jonatha.dantas.2019@gmail.com</p>
+          </footer>
+        );
+      }
+
+      function App() {
+        return (
+          <div>
+            <ThreeBackground />
+            <Navbar />
+            <Hero />
+            <SkillsSection />
+            <ProjectsSection />
+            <Footer />
           </div>
         );
       }
 
-      // Inicializa o React diretamente na div root do index.html
       const rootElement = document.getElementById('root');
       if (rootElement) {
         const root = ReactDOM.createRoot(rootElement);
-        root.render(<Dashboard />);
+        root.render(<App />);
       }
     </script>
 </body>
